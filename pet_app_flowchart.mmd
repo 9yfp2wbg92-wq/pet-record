@@ -1,0 +1,142 @@
+flowchart TD
+    Start([应用启动]) --> CheckUser{有用户ID?}
+    CheckUser -->|是| LoadData[加载用户数据]
+    CheckUser -->|否| Register[跳转注册页面]
+
+    LoadData --> LoadPets[加载宠物列表]
+    LoadPets --> LoadPosts[加载动态数据]
+    LoadPosts --> LoadMilestones[加载里程碑]
+    LoadMilestones --> ShowHome[显示首页]
+
+    Register --> InputName[输入昵称]
+    InputName --> InputAvatar[选择头像]
+    InputAvatar --> ConfirmRegister[确认注册]
+    ConfirmRegister --> CreateUser[创建User对象]
+    CreateUser --> SetCurrentUser[设置当前用户]
+    SetCurrentUser --> ShowHome
+
+    ShowHome --> PetManage[宠物管理]
+    ShowHome --> PostPublish[动态发布]
+    ShowHome --> PostInteract[动态交互]
+    ShowHome --> TimelinePage[大事年表]
+    ShowHome --> AIInsights[AI看板]
+    ShowHome --> SwitchUser[切换用户]
+
+    PetManage --> CheckPets{有宠物?}
+    CheckPets -->|否| EmptyPet[显示空状态]
+    CheckPets -->|是| ShowPetList[显示资料卡列表]
+    EmptyPet --> AddPet[点击添加宝贝]
+    ShowPetList --> AddPet
+
+    AddPet --> PetName[输入名称]
+    PetName --> PetSpecies[选择种类]
+    PetSpecies --> PetGender[选择性别]
+    PetGender --> PetBirthday[设置生日]
+    PetBirthday --> PetArrival[设置到家日期]
+    PetArrival --> PetAvatar[上传头像]
+    PetAvatar --> SavePet[点击保存]
+    SavePet --> CreatePet[创建Pet对象]
+    CreatePet --> StorePet[更新localStorage]
+    StorePet --> ShowPetCard[显示资料卡]
+
+    PostPublish --> SelectPetFilter[选择宠物筛选]
+    SelectPetFilter --> InputContent[输入文字]
+    InputContent --> AddImage[添加图片]
+    AddImage --> CheckAIRecognize{点击AI识别?}
+    CheckAIRecognize -->|是| AIService[上传AI服务]
+    AIService --> AIResult[识别健康事件]
+    AIResult --> CheckEvent[用户勾选事件]
+    CheckEvent --> ConfirmArchive[确认归档]
+    ConfirmArchive --> CreateMilestone[创建里程碑记录]
+    CheckAIRecognize -->|否| ClickPublish
+
+    CreateMilestone --> ClickPublish[点击发布]
+    ClickPublish --> CreatePost[创建Post对象]
+    CreatePost --> StorePost[更新localStorage]
+    StorePost --> InsertPostTop[动态插入顶部]
+
+    PostInteract --> ImagePreview[图片预览]
+    PostInteract --> ToggleLike[点赞交互]
+    PostInteract --> AddComment[评论发布]
+
+    ImagePreview --> ClickImage[点击图片]
+    ClickImage --> ShowPreview[显示预览弹窗]
+    ShowPreview --> ClosePreview[点击关闭]
+
+    ToggleLike --> ClickHeart[点击心形图标]
+    ClickHeart --> CheckLiked{已点赞?}
+    CheckLiked -->|是| TurnGray[心形变灰色]
+    CheckLiked -->|否| TurnRed[心形变红色]
+    TurnGray --> UpdateLocalState[更新本地状态]
+    TurnRed --> UpdateLocalState
+    UpdateLocalState --> UpdateStore[更新localStorage]
+    UpdateStore --> ShowLikers[显示点赞者]
+
+    AddComment --> ClickCommentBox[点击评论框]
+    ClickCommentBox --> InputComment[输入评论]
+    InputComment --> ClickSend[点击发送]
+    ClickSend --> CreateComment[创建Comment对象]
+    CreateComment --> StoreComment[更新localStorage]
+    StoreComment --> ShowComment[评论显示在列表]
+
+    TimelinePage --> SelectPetFilter2[选择宠物筛选]
+    SelectPetFilter2 --> SelectTypeFilter[选择类型筛选]
+    SelectTypeFilter --> FilterData[过滤里程碑数据]
+    FilterData --> SortData[按日期倒序]
+    SortData --> ShowTimeline[显示时间轴]
+
+    ShowTimeline --> ClickAdd[点击+按钮]
+    ClickAdd --> ShowAddModal[显示添加弹窗]
+    ShowAddModal --> SelectEventType[选择事件类型]
+    SelectEventType --> InputTitle[输入标题]
+    InputTitle --> InputDesc[输入描述]
+    InputDesc --> SelectDate[选择日期]
+    SelectDate --> CheckWeight{类型是体重?}
+    CheckWeight -->|是| InputWeight[输入体重数值]
+    CheckWeight -->|否| SaveMilestone[点击保存]
+    InputWeight --> SaveMilestone
+
+    SaveMilestone --> CreateMilestone2[创建Milestone对象]
+    CreateMilestone2 --> StoreMilestone[更新localStorage]
+    StoreMilestone --> RefreshTimeline[刷新时间轴]
+
+    AIInsights --> GetCurrentPet[获取当前宠物]
+    GetCurrentPet --> CheckPetExist{有宠物?}
+    CheckPetExist -->|否| ShowEmpty[显示空状态]
+    CheckPetExist -->|是| FilterPetMilestones[过滤宠物里程碑]
+
+    FilterPetMilestones --> CountEvents[统计健康事件数]
+    CountEvents --> CheckEventCount{事件数>=2?}
+    CheckEventCount -->|否| ShowGuide[显示引导提示]
+    CheckEventCount -->|是| GenerateReport[生成健康报告]
+
+    GenerateReport --> CalcScore[计算健康评分]
+    GenerateReport --> AnalyzeWeight[分析体重趋势]
+    GenerateReport --> CheckVaccine[检查疫苗状态]
+    GenerateReport --> AnalyzeDeworm[分析驱虫频率]
+    GenerateReport --> GenerateAdvice[生成健康建议]
+    GenerateReport --> StatsSummary[统计历史摘要]
+    CalcScore --> ShowReport[显示完整报告]
+    AnalyzeWeight --> ShowReport
+    CheckVaccine --> ShowReport
+    AnalyzeDeworm --> ShowReport
+    GenerateAdvice --> ShowReport
+    StatsSummary --> ShowReport
+
+    SwitchUser --> ClickAvatar[点击用户头像]
+    ClickAvatar --> ShowUserList[显示用户列表]
+    ShowUserList --> SelectUser[选择目标用户]
+    SelectUser --> SetNewUserId[设置新currentUserId]
+    SetNewUserId --> ReloadData[调用loadData]
+    ReloadData --> LoadNewPets[加载新用户宠物]
+    LoadNewPets --> LoadNewPosts[加载新用户动态]
+    LoadNewPosts --> LoadNewMilestones[加载新用户里程碑]
+    LoadNewMilestones --> UpdateStoreState[更新store状态]
+    UpdateStoreState --> ShowHome
+
+    ShowHome --> PetSync[跨页面宠物同步]
+    PetSync --> SelectPet[选择宠物]
+    SelectPet --> SetPetId[调用setCurrentPetId]
+    SetPetId --> UpdatePetStore[更新store.currentPetId]
+    UpdatePetStore --> UpdatePetStorage[更新localStorage]
+    UpdatePetStorage --> SyncPages[页面同步更新]

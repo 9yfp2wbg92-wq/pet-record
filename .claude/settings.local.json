@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(find /Users/antelcao/.claude -name \"*.md\" -path \"*/skills/*\" 2>/dev/null | head -20)",
+      "Read(//Users/antelcao/.claude/**)",
+      "Bash(node /Users/antelcao/.claude/impeccable/.rovodev/skills/impeccable/scripts/context.mjs --target /Users/antelcao/Desktop/pet-record-main)",
+      "Bash(find /Users/antelcao -maxdepth 5 -type d -name \"pm-*\" 2>/dev/null | head -20)",
+      "Read(//Users/antelcao/**)",
+      "WebSearch",
+      "Bash(claude plugin *)",
+      "Bash(xxd)",
+      "Bash(mkdir -p ~/.claude/skills)",
+      "Bash(cp -r /tmp/cinematic-ui ~/.claude/skills/)",
+      "Bash(rm -rf /tmp/cinematic-ui && echo \"Cleaned up temp files\")"
+    ],
+    "additionalDirectories": [
+      "/private/tmp/cinematic-ui"
+    ]
+  }
+}
