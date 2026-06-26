@@ -2,3 +2,7 @@ node_modules
 dist
 .DS_Store
 *.local
+
+# AI 工具工作目录
+.cinematic/
+.trae/

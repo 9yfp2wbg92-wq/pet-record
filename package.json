@@ -1,7 +1,10 @@
 {
-  "name": "workspace",
+  "name": "pet-record",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "宠物生活记录与健康管理应用 — 动态记录、大事年表、AI 看板、家庭共享",
+  "author": "9yfp2wbg92-wq",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
