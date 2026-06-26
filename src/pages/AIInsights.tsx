@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Sparkles, ThumbsUp, ThumbsDown, Clock, Edit3, X } from 'lucide-react';
+import { Sparkles, ThumbsUp, ThumbsDown, Clock, Edit3, X, Droplets, Bug, Syringe, Scale, FileText } from 'lucide-react';
 import { usePetStore } from '../hooks/usePetStore';
+import { getPetColor } from '../utils/petColors';
 
 export function AIInsights() {
  const { pets, currentPetId, milestones, posts, setCurrentPetId, updateMilestone } = usePetStore();
@@ -8,7 +9,7 @@ export function AIInsights() {
  const [healthReport, setHealthReport] = useState<{
   overall: string;
   warning: string;
-  suggestion: string;
+  suggestion: string; hasWarningAlert?: boolean;
  } | null>(null);
  const [reminders, setReminders] = useState<{
   type: string;
@@ -118,7 +119,7 @@ export function AIInsights() {
     }
    }
 
-   let warning = '暂无异常记录，继续保持良好的护理习惯。';
+   let warning = "暂无异常记录，继续保持良好的护理习惯。";
    if (abnormalRecords.length > 0) {
     warning = `⚠️ 本月有 ${abnormalRecords.length} 次异常记录，${abnormalRecords.some(r => r.description?.includes('拉稀')) ? '包括轻微拉稀，' : ''}建议继续观察并注意保暖和饮食卫生。`;
    }
@@ -135,7 +136,7 @@ export function AIInsights() {
     suggestion = '目前各项护理都很到位，继续保持定期记录的好习惯！';
    }
 
-   setHealthReport({
+   setHealthReport({ hasWarningAlert: abnormalRecords.length > 0,
     overall: `${selectedPet?.name || '宝贝'}目前共记录了${petMilestones.length}条重要事件，整体健康状况良好。${weightTrend}`,
     warning,
     suggestion,
@@ -155,8 +156,8 @@ export function AIInsights() {
   const newReminders: typeof reminders = [];
 
   const reminderTypes = [
-   { type: '洗澡', milestoneType: 'bath', defaultInterval: 30, icon: '🛁' },
-   { type: '驱虫', milestoneType: 'deworm', defaultInterval: 30, icon: '🐛' },
+   { type: '洗澡', milestoneType: 'bath', defaultInterval: 30 },
+   { type: '驱虫', milestoneType: 'deworm', defaultInterval: 30 },
   ];
 
   reminderTypes.forEach(({ type, milestoneType, defaultInterval }) => {
@@ -189,12 +190,12 @@ export function AIInsights() {
  };
 
  return (
-  <div className="min-h-screen bg-background pb-20">
+  <div className="pb-4">
    {/* Header */}
-   <div className="bg-white border-b border-neutral-200 sticky top-0 z-40">
+   <div className="bg-surface border-b border-paper-300 sticky top-0 z-40">
     <div className="max-w-md mx-auto px-4 py-4">
      <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-500 flex items-center justify-center shadow-lg shadow-purple-200">
+      <div className="w-10 h-10 rounded-3xl bg-paper-800 flex items-center justify-center shadow-card">
        <Sparkles className="w-5 h-5 text-white" />
       </div>
       <div>
@@ -209,19 +210,23 @@ export function AIInsights() {
     {pets.length > 0 && (
      <div className="px-4 pb-3">
       <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-       {pets.map((pet) => (
+       {pets.map((pet, idx) => {
+         const pColor = getPetColor(idx);
+         const isActive = effectivePetId === pet.id;
+         return (
         <button
          key={pet.id}
          onClick={() => setCurrentPetId(pet.id)}
-         className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-          effectivePetId === pet.id
-           ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-200'
-           : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
+         className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-semibold transition-all ${
+          isActive
+           ? `bg-gradient-to-r ${pColor.btn} text-white shadow-card`
+           : `${pColor.bg} ${pColor.text} hover:opacity-80`
          }`}
         >
+         <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : pColor.dot}`} />
          {pet.name}
         </button>
-       ))}
+       );})}
       </div>
      </div>
     )}
@@ -229,8 +234,8 @@ export function AIInsights() {
 
    {!effectivePetId ? (
     <div className="max-w-md mx-auto px-4 py-16 text-center">
-     <div className="w-24 h-24 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-purple-100 to-violet-100 flex items-center justify-center shadow-soft">
-      <Sparkles className="w-12 h-12 text-purple-400" />
+     <div className="w-24 h-24 mx-auto mb-4 rounded-2xl bg-paper-200 flex items-center justify-center shadow-card">
+      <Sparkles className="w-12 h-12 text-paper-500" />
      </div>
      <p className="text-text-secondary font-medium text-lg">请先选择一个宝贝</p>
      <p className="text-text-muted text-sm mt-1">选择后即可查看健康分析</p>
@@ -239,13 +244,11 @@ export function AIInsights() {
     <div className="max-w-md mx-auto px-4 py-6 space-y-6">
      {/* 30天健康总结卡片 */}
      <section>
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50 via-violet-50 to-white p-5 border border-purple-100 shadow-soft">
-       {/* 装饰背景 */}
-       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-200/20 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
+      <div className="rounded-3xl bg-surface p-5 border-2 border-paper-300 shadow-card">
 
        <div className="relative">
         <div className="flex items-center gap-2 mb-4">
-         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-violet-500 flex items-center justify-center">
+         <div className="w-9 h-9 rounded-full bg-paper-800 flex items-center justify-center">
           <Sparkles className="w-5 h-5 text-white" />
          </div>
          <h2 className="text-lg font-bold text-text-primary">30天健康报告</h2>
@@ -253,38 +256,38 @@ export function AIInsights() {
 
         {loading ? (
          <div className="flex items-center justify-center gap-3 py-8">
-          <div className="w-8 h-8 border-3 border-purple-300 border-t-purple-500 rounded-full animate-spin" />
+          <div className="w-8 h-8 border-3 border-paper-300 border-t-paper-600 rounded-full animate-spin" />
           <span className="text-text-secondary font-medium">AI正在分析中...</span>
          </div>
         ) : healthReport ? (
          <div className="space-y-3">
-          <div className="bg-white rounded-2xl p-4 ">
-           <p className="text-sm font-semibold text-purple-600 mb-1">整体状态</p>
+          <div className="bg-surface rounded-2xl p-4 ">
+           <p className="text-sm font-semibold text-paper-700 mb-1">整体状态</p>
            <p className="text-sm text-text-secondary leading-relaxed">{healthReport.overall}</p>
           </div>
 
-          <div className={`bg-white rounded-2xl p-4 ${
-           healthReport.warning.includes('⚠️') ? 'border-l-4 border-red-400' : ''
+          <div className={`bg-surface rounded-2xl p-4 ${
+           healthReport.hasWarningAlert ? 'border-2 border-red-200 bg-red-50/30' : ''
           }`}>
            <p className="text-sm font-semibold text-red-500 mb-1">异常警示</p>
            <p className={`text-sm leading-relaxed ${
-            healthReport.warning.includes('⚠️') ? 'text-red-600' : 'text-text-secondary'
+            healthReport.hasWarningAlert ? 'text-red-600' : 'text-text-secondary'
            }`}>
             {healthReport.warning}
            </p>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 ">
-           <p className="text-sm font-semibold text-accent-600 mb-1">护理建议</p>
+          <div className="bg-surface rounded-2xl p-4 ">
+           <p className="text-sm font-semibold text-paper-700 mb-1">护理建议</p>
            <p className="text-sm text-text-secondary leading-relaxed">{healthReport.suggestion}</p>
           </div>
 
           <div className="flex gap-4 pt-2">
-           <button className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white text-text-secondary rounded-2xl text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm">
+           <button className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-surface text-text-secondary rounded-3xl text-sm font-medium hover:bg-paper-100 transition-colors shadow-card">
             <ThumbsUp className="w-4 h-4" />
             有用
            </button>
-           <button className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white text-text-secondary rounded-2xl text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm">
+           <button className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-surface text-text-secondary rounded-3xl text-sm font-medium hover:bg-paper-100 transition-colors shadow-card">
             <ThumbsDown className="w-4 h-4" />
             改进
            </button>
@@ -292,8 +295,8 @@ export function AIInsights() {
          </div>
         ) : milestoneCount < 2 ? (
          <div className="text-center py-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-purple-100 flex items-center justify-center">
-           <Sparkles className="w-8 h-8 text-purple-400" />
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-paper-200 flex items-center justify-center">
+           <Sparkles className="w-8 h-8 text-paper-500" />
           </div>
           {milestoneCount === 0 ? (
            <>
@@ -320,7 +323,7 @@ export function AIInsights() {
         {healthReport && (
          <button
           onClick={generateHealthReport}
-          className="w-full mt-4 py-3 bg-purple-100 text-purple-600 rounded-2xl font-semibold hover:bg-purple-200 transition-colors"
+          className="w-full mt-4 py-3 bg-paper-200 text-paper-700 rounded-2xl font-semibold hover:bg-paper-300 transition-colors border-2 border-dashed border-paper-400"
          >
           重新生成报告
          </button>
@@ -337,9 +340,9 @@ export function AIInsights() {
       </h2>
 
       {reminders.length === 0 ? (
-       <div className="bg-white rounded-2xl p-8 text-center border border-neutral-200 shadow-card">
-        <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-primary-50 flex items-center justify-center">
-         <Clock className="w-8 h-8 text-primary-300" />
+       <div className="bg-surface rounded-2xl p-8 text-center border-2 border-paper-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-paper-200 flex items-center justify-center">
+         <Clock className="w-8 h-8 text-paper-400" />
         </div>
         <p className="text-text-secondary font-medium">暂无护理提醒</p>
         <p className="text-text-muted text-sm mt-1">记录驱虫或疫苗后会自动生成</p>
@@ -347,23 +350,23 @@ export function AIInsights() {
       ) : (
        <div className="grid grid-cols-2 gap-3">
         {reminders.map((reminder, index) => {
-         const icon = reminderIcons[reminder.type] || '📝';
+            const RemIcon = reminder.type === '洗澡' ? Droplets : reminder.type === '驱虫' ? Bug : reminder.type === '疫苗' ? Syringe : reminder.type === '体重' ? Scale : FileText;
          const isUrgent = reminder.daysLeft <= 3;
          return (
          <div
           key={index}
-          className={`bg-white rounded-2xl p-4 border shadow-card transition-all hover:shadow-soft ${
-           isUrgent ? 'border-red-200 bg-red-50/30' : 'border-neutral-200'
+          className={`bg-surface rounded-2xl p-4 border-2 shadow-card transition-all hover:shadow-soft ${
+           isUrgent ? 'border-red-200 bg-red-50/30' : 'border-paper-300'
           }`}
          >
           <div className="flex items-center justify-between mb-2">
            <div className="flex items-center gap-2">
-            <span className="text-lg">{icon}</span>
+            <RemIcon className="w-5 h-5" strokeWidth={2.5} />
             <span className="text-sm font-semibold text-text-primary">{reminder.type}</span>
            </div>
            <button
             onClick={() => handleEditReminder(reminder.type, reminder.totalDays, reminder.milestoneId)}
-            className="p-1.5 hover:bg-white rounded-lg transition-colors"
+            className="p-1.5 hover:bg-surface rounded-xl transition-colors"
             title="编辑提醒间隔"
            >
             <Edit3 className="w-4 h-4 text-text-muted" />
@@ -375,12 +378,12 @@ export function AIInsights() {
            <span className="text-sm font-normal text-text-muted ml-1">天</span>
           </div>
 
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-2 bg-paper-200 rounded-full overflow-hidden">
            <div
             className={`h-full rounded-full transition-all duration-500 ${
              reminder.type === '洗澡'
-              ? 'bg-gradient-to-r from-blue-400 to-blue-500'
-              : 'bg-gradient-to-r from-teal-400 to-teal-500'
+              ? 'bg-paper-700'
+              : 'bg-paper-600'
             }`}
             style={{ width: `${reminder.progress}%` }}
            />
@@ -406,12 +409,12 @@ export function AIInsights() {
      {/* 编辑提醒间隔弹窗 */}
      {showEditModal && editingReminder && (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[55] p-4">
-       <div className="bg-white rounded-3xl w-full max-w-sm p-6 shadow-float animate-scale-in">
+       <div className="bg-surface rounded-3xl w-full max-w-sm p-6 shadow-float animate-scale-in">
         <div className="flex items-center justify-between mb-4">
          <h3 className="text-lg font-bold text-text-primary">编辑{editingReminder.type}提醒间隔</h3>
          <button
           onClick={() => setShowEditModal(false)}
-          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-2 hover:bg-paper-200 rounded-full transition-colors"
          >
           <X className="w-5 h-5 text-text-muted" />
          </button>
@@ -427,20 +430,20 @@ export function AIInsights() {
           max="365"
           value={editInterval}
           onChange={(e) => setEditInterval(Math.max(1, Math.min(365, parseInt(e.target.value) || 1)))}
-          className="w-full px-4 py-3 bg-neutral-50 border-2 border-neutral-200 rounded-2xl focus:border-neutral-400 focus:ring-4 focus:ring-neutral-100 outline-none text-center text-2xl font-bold number-font"
+          className="w-full px-4 py-3 bg-paper-100 border-2 border-paper-300 rounded-3xl focus:border-paper-500 focus:ring-4 focus:ring-paper-200 outline-none text-center text-2xl font-bold number-font"
          />
         </div>
 
         <div className="flex gap-3">
          <button
           onClick={() => setShowEditModal(false)}
-          className="flex-1 py-3 bg-gray-100 text-text-secondary rounded-2xl font-semibold hover:bg-gray-200 transition-colors"
+          className="flex-1 py-3 bg-paper-200 text-text-secondary rounded-3xl font-semibold hover:bg-paper-300 transition-colors"
          >
           取消
          </button>
          <button
           onClick={handleSaveInterval}
-          className="flex-1 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-2xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg shadow-primary-200"
+          className="flex-1 py-3 bg-paper-900 text-white rounded-3xl font-semibold hover:bg-paper-800 transition-all shadow-card"
          >
           保存
          </button>

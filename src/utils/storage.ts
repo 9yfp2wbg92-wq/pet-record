@@ -209,9 +209,11 @@ export const storage = {
   // 生成邀请码
   generateInviteCode: (): string => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const array = new Uint8Array(6);
+    crypto.getRandomValues(array);
     let code = '';
     for (let i = 0; i < 6; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
+      code += chars.charAt(array[i] % chars.length);
     }
     return code;
   },

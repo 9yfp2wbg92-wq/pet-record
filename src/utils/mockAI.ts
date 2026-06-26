@@ -12,7 +12,90 @@ export interface AIExtractedData {
   events: DetectedEvent[];
   date: string;
   raw_text: string;
-  detected_pet_name?: string; // AI识别到的宠物名字
+  detected_pet_name?: string; // AI识别到的宠物名字（最佳匹配）
+  detected_pet_names?: string[]; // 所有识别到的宠物名（多宠物动态）
+}
+
+// 解析文本中的相对日期词，返回实际日期字符串
+function parseRelativeDate(text: string, today: Date): string | null {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const fmt = (d: Date) => d.toISOString().split('T')[0];
+
+  // 精确相对天数
+  const relativeDays: Record<string, number> = {
+    '大前天': -3, '前天': -2, '昨天': -1, '今天': 0,
+    '明天': 1, '后天': 2, '大后天': 3,
+  };
+  for (const [word, offset] of Object.entries(relativeDays)) {
+    if (text.includes(word)) {
+      const d = new Date(today.getTime() + offset * dayMs);
+      return fmt(d);
+    }
+  }
+
+  // X天前 / X天之前
+  const daysAgoMatch = text.match(/(\d{1,3})\s*天[之以]?前/);
+  if (daysAgoMatch) {
+    const d = new Date(today.getTime() - parseInt(daysAgoMatch[1]) * dayMs);
+    return fmt(d);
+  }
+
+  // X天后 / X天之后
+  const daysLaterMatch = text.match(/(\d{1,3})\s*天[之以]?后/);
+  if (daysLaterMatch) {
+    const d = new Date(today.getTime() + parseInt(daysLaterMatch[1]) * dayMs);
+    return fmt(d);
+  }
+
+  // 上周X
+  const lastWeekMatch = text.match(/上周([一二三四五六日天])/);
+  if (lastWeekMatch) {
+    const dayMap: Record<string, number> = { '一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '日': 0, '天': 0 };
+    const targetDay = dayMap[lastWeekMatch[1]];
+    const currentDay = today.getDay();
+    const daysToLastMonday = currentDay === 0 ? 6 : currentDay - 1; // days since last Monday
+    const lastMonday = new Date(today.getTime() - (daysToLastMonday + 7) * dayMs);
+    const d = new Date(lastMonday.getTime() + targetDay * dayMs);
+    return fmt(d);
+  }
+
+  // 本周X
+  const thisWeekMatch = text.match(/本周([一二三四五六日天])/);
+  if (thisWeekMatch) {
+    const dayMap: Record<string, number> = { '一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '日': 0, '天': 0 };
+    const targetDay = dayMap[thisWeekMatch[1]];
+    const currentDay = today.getDay();
+    const daysToLastMonday = currentDay === 0 ? 6 : currentDay - 1;
+    const thisMonday = new Date(today.getTime() - daysToLastMonday * dayMs);
+    const d = new Date(thisMonday.getTime() + targetDay * dayMs);
+    return fmt(d);
+  }
+
+  // 周X（默认本周）
+  const weekDayMatch = text.match(/周([一二三四五六日天])/);
+  if (weekDayMatch) {
+    const dayMap: Record<string, number> = { '一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '日': 0, '天': 0 };
+    const targetDay = dayMap[weekDayMatch[1]];
+    const currentDay = today.getDay();
+    const daysToLastMonday = currentDay === 0 ? 6 : currentDay - 1;
+    const thisMonday = new Date(today.getTime() - daysToLastMonday * dayMs);
+    let d = new Date(thisMonday.getTime() + targetDay * dayMs);
+    // If the target day is before today, assume next week
+    if (d.getTime() < today.getTime() - dayMs) {
+      d = new Date(d.getTime() + 7 * dayMs);
+    }
+    return fmt(d);
+  }
+
+  // 上周 / 这周（模糊匹配，返回周中日期）
+  if (text.includes('上周')) {
+    const currentDay = today.getDay();
+    const daysToLastMonday = currentDay === 0 ? 6 : currentDay - 1;
+    const d = new Date(today.getTime() - (daysToLastMonday + 7) * dayMs);
+    return fmt(d);
+  }
+
+  return null;
 }
 
 export function mockAIExtract(text: string, currentDate: string, petNames?: string[]): AIExtractedData {
@@ -20,8 +103,13 @@ export function mockAIExtract(text: string, currentDate: string, petNames?: stri
   const events: DetectedEvent[] = [];
   const today = new Date(currentDate);
 
-  // 识别宠物名字 —— 更智能的匹配
+  // 从文本中提取相对日期词，用于事件日期
+  const extractedDate = parseRelativeDate(text, today);
+  const eventDate = extractedDate || currentDate;
+
+  // 识别宠物名字 —— 更智能的匹配（收集所有匹配到的宠物）
   let detectedPetName: string | undefined;
+  const detectedPetNamesSet = new Set<string>();
   if (petNames && petNames.length > 0) {
     // 1. 按名字长度从长到短排序，优先匹配更具体的名字
     const sortedPetNames = [...petNames].sort((a, b) => b.length - a.length);
@@ -114,16 +202,23 @@ export function mockAIExtract(text: string, currentDate: string, petNames?: stri
 
     if (bestMatch) {
       detectedPetName = bestMatch.name;
+      detectedPetNamesSet.add(bestMatch.name);
+    }
+    // 同时收集文本中出现的所有宠物名（支持多宠物动态）
+    for (const name of sortedPetNames) {
+      if (text.includes(name)) {
+        detectedPetNamesSet.add(name);
+      }
     }
   }
 
   const addDays = (days: number) => {
-    const d = new Date(today);
+    const d = new Date(eventDate);
     d.setDate(d.getDate() + days);
     return d.toISOString().split('T')[0];
   };
   const addMonths = (months: number) => {
-    const d = new Date(today);
+    const d = new Date(eventDate);
     d.setMonth(d.getMonth() + months);
     return d.toISOString().split('T')[0];
   };
@@ -221,13 +316,25 @@ export function mockAIExtract(text: string, currentDate: string, petNames?: stri
       event_name: '体重记录',
       summary: weightValue ? `体重 ${weightValue}kg` : '体重记录',
       metrics: weightValue ? { weight_kg: weightValue } : {},
-      next_predicted_date: addDays(30),
-      next_days_interval: 30,
+      next_predicted_date: '',
+      next_days_interval: 0,
     });
   }
 
-  // 识别就医
-  if (lowerText.includes('就医') || lowerText.includes('看病') || lowerText.includes('医院') || lowerText.includes('兽医') || lowerText.includes('看诊')) {
+  // 识别绝育
+  if (lowerText.includes('绝育') || lowerText.includes('阉割') || lowerText.includes('去势') || lowerText.includes('绝育手术')) {
+    events.push({
+      event_type: 'neuter',
+      event_name: '绝育手术',
+      summary: '进行绝育/去势手术',
+      metrics: {},
+      next_predicted_date: '',
+      next_days_interval: 0,
+    });
+  }
+
+  // 识别就医（打针需结合上下文判断，单独"打针"默认归为疫苗，用户可在弹窗中修改）
+  if (lowerText.includes('就医') || lowerText.includes('看病') || lowerText.includes('医院') || lowerText.includes('兽医') || lowerText.includes('看诊') || lowerText.includes('就诊') || lowerText.includes('门诊')) {
     events.push({
       event_type: '就医',
       event_name: '就医问诊',
@@ -259,8 +366,9 @@ export function mockAIExtract(text: string, currentDate: string, petNames?: stri
   return {
     has_event: events.length > 0,
     events,
-    date: currentDate,
+    date: eventDate,
     raw_text: text,
     detected_pet_name: detectedPetName,
+    detected_pet_names: detectedPetNamesSet.size > 0 ? Array.from(detectedPetNamesSet) : undefined,
   };
 }

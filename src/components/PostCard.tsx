@@ -62,7 +62,7 @@ export function PostCard({ post }: PostCardProps) {
  const DisplayIcon = pet ? (getCategoryById(pet.categoryId)?.icon || Camera) : Camera;
 
  return (
-  <div className="bg-surface rounded-2xl shadow-sm border border-orange-100 mb-4 overflow-hidden animate-slide-up">
+  <div className="bg-surface rounded-3xl shadow-card border-2 border-wood-200 mb-4 overflow-hidden animate-slide-up">
    {/* 照片在顶部 */}
    {post.media.length > 0 && (
     <div className="grid gap-1">
@@ -111,7 +111,7 @@ export function PostCard({ post }: PostCardProps) {
    )}
 
    {/* 操作栏 */}
-   <div className="px-4 py-3 flex items-center justify-between border-t border-orange-100">
+   <div className="px-4 py-3 flex items-center justify-between border-t border-wood-200">
     <button
      onClick={() => setShowComments(!showComments)}
      className="flex items-center gap-2 text-text-muted hover:text-primary transition-colors"
@@ -123,7 +123,7 @@ export function PostCard({ post }: PostCardProps) {
 
    {/* 评论区 */}
    {showComments && (
-    <div className="px-4 pb-4 border-t border-orange-100 pt-3">
+    <div className="px-4 pb-4 border-t border-wood-200 pt-3">
      {/* 评论列表 */}
      {post.comments.length > 0 && (
       <div className="space-y-3 mb-4">
@@ -174,7 +174,7 @@ export function PostCard({ post }: PostCardProps) {
         }
        }}
        placeholder="写下你的评论..."
-       className="flex-1 px-4 py-2 rounded-full border border-orange-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-orange-50/50 text-sm"
+       className="flex-1 px-4 py-2 rounded-full border-2 border-orange-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-orange-50/50 text-sm"
       />
       <button
        onClick={handleAddComment}

@@ -54,7 +54,7 @@ export const initialPosts: Post[] = [
     id: 'post_2',
     petId: 'pet_2',
     authorUserId: 'user_1',
-    content: '花花今天又睡了一整天，真是个小懒猫🐱',
+    content: '花花今天又睡了一整天，真是个小懒猫',
     media: [],
     createdAt: new Date(Date.now() - 172800000).toISOString(),
     comments: [],
@@ -70,7 +70,7 @@ export const initialMilestones: Milestone[] = [
     title: '到家',
     description: '豆豆来到新家的第一天',
     date: '2022-08-20',
-    icon: '🏠',
+    icon: 'home',
     authorUserId: 'user_1',
   },
   {
@@ -80,7 +80,7 @@ export const initialMilestones: Milestone[] = [
     title: '疫苗接种',
     description: '完成第一针疫苗',
     date: '2022-09-01',
-    icon: '💉',
+    icon: 'home',
     authorUserId: 'user_1',
   },
   {
@@ -90,7 +90,7 @@ export const initialMilestones: Milestone[] = [
     title: '到家',
     description: '花花来到新家',
     date: '2023-05-01',
-    icon: '🏠',
+    icon: 'home',
     authorUserId: 'user_1',
   },
   {
@@ -100,7 +100,7 @@ export const initialMilestones: Milestone[] = [
     title: '绝育',
     description: '完成绝育手术',
     date: '2023-06-15',
-    icon: '⚕️',
+    icon: 'home',
     authorUserId: 'user_1',
   },
 ];

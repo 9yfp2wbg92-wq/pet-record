@@ -1,21 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { User, PawPrint, Calendar, Copy, Check, Key, Plus, Settings, LogOut, Camera, Edit3, Trash2, X, ChevronRight, MoreVertical, Share2 } from 'lucide-react';
+import { User, PawPrint, Users, Cake, Home, Calendar, Copy, Check, Key, Plus, Settings, LogOut, Camera, Edit3, Trash2, X, ChevronRight, MoreVertical, Share2 } from 'lucide-react';
 import { usePetStore } from '../hooks/usePetStore';
+import { petCategoryIcons, petCategoryEmoji, getCategoryIcon } from '../components/IllustratedIcon';
+import { getPetColor } from '../utils/petColors';
 import { calculateDaysAtHome, calculateAge } from '../utils/breedData';
 
-const CATEGORIES = [
- { id: 'cat', name: '猫咪', emoji: '🐱' },
- { id: 'dog', name: '狗狗', emoji: '🐶' },
- { id: 'bird', name: '鸟类', emoji: '🐦' },
- { id: 'rabbit', name: '兔子', emoji: '🐰' },
- { id: 'fish', name: '鱼类', emoji: '🐟' },
- { id: 'mouse', name: '鼠鼠', emoji: '🐹' },
- { id: 'reptile', name: '爬宠', emoji: '🦎' },
- { id: 'ferret', name: '貂', emoji: '🦦' },
- { id: 'sugar_glider', name: '蜜袋鼯', emoji: '🐨' },
- { id: 'hedgehog', name: '刺猬', emoji: '🦔' },
-];
+const CATEGORIES = Object.entries(petCategoryIcons).map(([id, { label }]) => ({ id, name: label, emoji: petCategoryEmoji[id] || "🐾" })).filter(c => c.id !== 'other_pet');
 
 const GENDERS = [
  { id: 'female', name: '妹妹', emoji: '♀' },
@@ -65,7 +56,7 @@ export function Profile() {
   categoryId: 'cat',
   customBreed: '',
   birthDateType: 'exact' as 'exact' | 'estimated' | 'unknown',
-  birthDate: '',
+  birthDate: new Date().toISOString().split('T')[0],
   birthYear: '',
   birthMonth: '',
   homeDate: new Date().toISOString().split('T')[0],
@@ -171,7 +162,7 @@ export function Profile() {
    categoryId: 'cat',
    customBreed: '',
    birthDateType: 'exact',
-   birthDate: '',
+   birthDate: new Date().toISOString().split('T')[0],
    birthYear: '',
    birthMonth: '',
    homeDate: new Date().toISOString().split('T')[0],
@@ -217,14 +208,14 @@ export function Profile() {
  };
 
  return (
-  <div className="min-h-screen bg-background pb-20">
+  <div className="pb-4">
    {/* Header */}
-   <div className="bg-white border-b border-neutral-200 sticky top-0 z-40">
+   <div className="bg-surface border-b border-paper-300 sticky top-0 z-40">
     <div className="max-w-md mx-auto px-4 py-4">
      <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-       <div className="w-10 h-10 rounded-2xl bg-neutral-100 flex items-center justify-center">
-        <PawPrint className="w-5 h-5 text-primary-600" />
+       <div className="w-10 h-10 rounded-3xl bg-paper-200 flex items-center justify-center">
+        <PawPrint className="w-5 h-5 text-paper-600" />
        </div>
        <div>
         <h1 className="text-xl font-bold text-text-primary">我的</h1>
@@ -235,14 +226,14 @@ export function Profile() {
       <div className="relative">
        <button
         onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-        className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+        className="p-2 hover:bg-paper-200 rounded-2xl transition-colors"
         title="设置"
        >
         <MoreVertical className="w-5 h-5 text-text-muted" />
        </button>
 
        {showSettingsMenu && (
-        <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-2xl shadow-float border border-neutral-200 overflow-hidden z-50 animate-slide-down">
+        <div className="absolute right-0 top-full mt-2 w-44 bg-surface rounded-3xl shadow-float border-2 border-paper-300 overflow-hidden z-50 animate-slide-down">
          <button
           onClick={logout}
           className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors"
@@ -262,11 +253,11 @@ export function Profile() {
     <section>
      <div className="flex items-center justify-between mb-4">
       <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
-       <span>🐾</span> 我的宝贝
+       <PawPrint className="w-5 h-5 text-paper-500" strokeWidth={2} /> 我的宝贝
       </h2>
       <button
        onClick={() => setShowAddForm(true)}
-       className="flex items-center gap-1.5 text-sm font-semibold text-primary-500 hover:text-primary-600 transition-colors"
+       className="flex items-center gap-1.5 text-sm font-semibold text-paper-700 hover:text-paper-900 transition-colors"
       >
        <Plus className="w-4 h-4" />
        添加宝贝
@@ -274,19 +265,21 @@ export function Profile() {
      </div>
 
      {pets.length === 0 ? (
-      <div className="bg-white rounded-2xl p-8 text-center border border-neutral-200 shadow-card">
-       <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-neutral-100 flex items-center justify-center">
-        <PawPrint className="w-10 h-10 text-primary-400" />
+      <div className="bg-surface rounded-2xl p-8 text-center border-2 border-paper-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+       <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-paper-200 flex items-center justify-center">
+        <PawPrint className="w-10 h-10 text-paper-400" />
        </div>
        <p className="text-text-secondary font-medium">还没有添加宝贝</p>
        <p className="text-text-muted text-sm mt-1">点击上方按钮添加你的第一个宝贝</p>
       </div>
      ) : (
       <div className="space-y-3">
-       {pets.map((pet) => (
+       {pets.map((pet, idx) => {
+         const pColor = getPetColor(idx);
+         return (
         <div
          key={pet.id}
-         className="bg-white rounded-2xl p-4 border border-neutral-200 shadow-card transition-all hover:shadow-soft"
+         className={`bg-surface rounded-2xl p-4 border-2 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-shadow ${pColor.border}`}
         >
          {editingPet?.id === pet.id ? (
           <div className="space-y-4">
@@ -297,7 +290,7 @@ export function Profile() {
               setEditingPet(null);
               setEditFormData(null);
              }}
-             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+             className="p-2 hover:bg-paper-200 rounded-full transition-colors"
             >
              <X className="w-5 h-5 text-text-muted" />
             </button>
@@ -306,13 +299,13 @@ export function Profile() {
            <div className="flex flex-col items-center">
             <div className="relative">
              {editFormData?.avatar ? (
-              <img src={editFormData.avatar} alt="宠物头像" className="w-20 h-20 rounded-2xl object-cover ring-4 ring-neutral-200" />
+              <img src={editFormData.avatar} alt="宠物头像" className="w-20 h-20 rounded-3xl object-cover ring-4 ring-neutral-200" />
              ) : (
-              <div className="w-20 h-20 rounded-2xl bg-neutral-100 flex items-center justify-center">
-               <PawPrint className="w-10 h-10 text-primary-400" />
+              <div className="w-20 h-20 rounded-3xl bg-paper-200 flex items-center justify-center">
+               <PawPrint className="w-10 h-10 text-paper-400" />
               </div>
              )}
-             <label className="absolute -bottom-2 -right-2 w-8 h-8 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-full flex items-center justify-center cursor-pointer hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg">
+             <label className="absolute -bottom-2 -right-2 w-8 h-8 bg-paper-800 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-paper-700 transition-all shadow-card">
               <Camera className="w-4 h-4" />
               <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, true)} />
              </label>
@@ -323,7 +316,7 @@ export function Profile() {
            <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">姓名</label>
             <input type="text" value={editFormData?.name || ''} onChange={(e) => setEditFormData((prev: any) => ({ ...prev, name: e.target.value }))}
-             className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm outline-none focus:border-neutral-400 focus:ring-4 focus:ring-neutral-100 transition-all" />
+             className="w-full px-3 py-2.5 bg-paper-100 border-2 border-paper-300 rounded-2xl text-sm outline-none focus:border-paper-500 focus:ring-4 focus:ring-paper-200 transition-all" />
            </div>
 
            <div>
@@ -331,10 +324,10 @@ export function Profile() {
             <div className="grid grid-cols-3 gap-2">
              {GENDERS.map(g => (
               <button key={g.id} type="button" onClick={() => setEditFormData((prev: any) => ({ ...prev, gender: g.id }))}
-               className={`py-2.5 rounded-xl text-sm font-medium transition-all ${
+               className={`py-2.5 rounded-2xl text-sm font-medium transition-all ${
                 editFormData?.gender === g.id
-                 ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-                 : 'bg-gray-50 text-text-secondary hover:bg-gray-100'
+                 ? 'bg-paper-800 text-white shadow-card'
+                 : 'bg-paper-100 text-text-secondary hover:bg-paper-200'
                }`}
               >
                {g.emoji} {g.name}
@@ -346,7 +339,7 @@ export function Profile() {
            <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">种类</label>
             <select value={editFormData?.categoryId || 'cat'} onChange={(e) => setEditFormData((prev: any) => ({ ...prev, categoryId: e.target.value }))}
-             className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm outline-none focus:border-neutral-400 focus:ring-4 focus:ring-neutral-100 transition-all">
+             className="w-full px-3 py-2.5 bg-paper-100 border-2 border-paper-300 rounded-2xl text-sm outline-none focus:border-paper-500 focus:ring-4 focus:ring-paper-200 transition-all">
              {CATEGORIES.map(c => (
               <option key={c.id} value={c.id}>{c.emoji} {c.name}</option>
              ))}
@@ -354,7 +347,7 @@ export function Profile() {
             {editFormData?.categoryId === 'other_pet' && (
              <input type="text" value={editFormData?.customBreed || ''} onChange={(e) => setEditFormData((prev: any) => ({ ...prev, customBreed: e.target.value }))}
               placeholder="如：乌龟、刺猬"
-              className="w-full px-3 py-2.5 mt-2 bg-neutral-50 border border-neutral-200 rounded-xl text-sm outline-none focus:border-neutral-400 transition-all" />
+              className="w-full px-3 py-2.5 mt-2 bg-paper-100 border-2 border-paper-300 rounded-2xl text-sm outline-none focus:border-paper-500 transition-all" />
             )}
            </div>
 
@@ -363,10 +356,10 @@ export function Profile() {
             <div className="flex gap-2 mb-2">
              {(['exact', 'estimated', 'unknown'] as const).map(type => (
               <button key={type} type="button" onClick={() => setEditFormData((prev: any) => ({ ...prev, birthDateType: type }))}
-               className={`flex-1 py-2 px-3 rounded-xl text-xs font-medium transition-all ${
+               className={`flex-1 py-2 px-3 rounded-2xl text-xs font-medium transition-all ${
                 editFormData?.birthDateType === type
-                 ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-                 : 'bg-gray-50 text-text-secondary hover:bg-gray-100'
+                 ? 'bg-paper-800 text-white shadow-card'
+                 : 'bg-paper-100 text-text-secondary hover:bg-paper-200'
                }`}
               >
                {type === 'exact' ? '准确日期' : type === 'estimated' ? '大概估计' : '未知'}
@@ -375,16 +368,16 @@ export function Profile() {
             </div>
             {editFormData?.birthDateType === 'exact' && (
              <input type="date" value={editFormData?.birthDate || ''} onChange={(e) => setEditFormData((prev: any) => ({ ...prev, birthDate: e.target.value }))}
-              className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm outline-none focus:border-neutral-400 transition-all" />
+              className="w-full px-3 py-2.5 bg-paper-100 border-2 border-paper-300 rounded-2xl text-sm outline-none focus:border-paper-500 transition-all" />
             )}
             {editFormData?.birthDateType === 'estimated' && (
              <div className="flex gap-2">
               <input type="number" value={editFormData?.birthYear || ''} onChange={(e) => setEditFormData((prev: any) => ({ ...prev, birthYear: e.target.value }))}
                placeholder="年份（如：2020）"
-               className="flex-1 px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm outline-none focus:border-neutral-400 transition-all" />
+               className="flex-1 px-3 py-2.5 bg-paper-100 border-2 border-paper-300 rounded-2xl text-sm outline-none focus:border-paper-500 transition-all" />
               <input type="number" value={editFormData?.birthMonth || ''} onChange={(e) => setEditFormData((prev: any) => ({ ...prev, birthMonth: e.target.value }))}
                placeholder="月份（选填）" min="1" max="12"
-               className="w-28 px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm outline-none focus:border-neutral-400 transition-all" />
+               className="w-28 px-3 py-2.5 bg-paper-100 border-2 border-paper-300 rounded-2xl text-sm outline-none focus:border-paper-500 transition-all" />
              </div>
             )}
            </div>
@@ -392,59 +385,59 @@ export function Profile() {
            <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">到家日期</label>
             <input type="date" value={editFormData?.homeDate || ''} onChange={(e) => setEditFormData((prev: any) => ({ ...prev, homeDate: e.target.value }))}
-             className="w-full px-3 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl text-sm outline-none focus:border-neutral-400 transition-all" />
+             className="w-full px-3 py-2.5 bg-paper-100 border-2 border-paper-300 rounded-2xl text-sm outline-none focus:border-paper-500 transition-all" />
            </div>
 
            <div className="flex gap-3 pt-2">
             <button onClick={() => { setEditingPet(null); setEditFormData(null); }}
-             className="flex-1 py-2.5 bg-gray-100 text-text-secondary rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors">取消</button>
+             className="flex-1 py-2.5 bg-paper-200 text-text-secondary rounded-2xl text-sm font-semibold hover:bg-paper-300 transition-colors">取消</button>
             <button onClick={handleSaveEdit}
-             className="flex-1 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl text-sm font-semibold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg shadow-primary-200">保存</button>
+             className="flex-1 py-2.5 bg-paper-900 text-white rounded-2xl text-sm font-semibold hover:bg-paper-800 transition-all shadow-card">保存</button>
            </div>
           </div>
          ) : (
           <div className="flex items-center gap-4">
            {pet.avatar ? (
-            <img src={pet.avatar} alt={pet.name} className="w-16 h-16 rounded-2xl object-cover flex-shrink-0 ring-2 ring-neutral-100" />
+            <img src={pet.avatar} alt={pet.name} className="w-16 h-16 rounded-3xl object-cover flex-shrink-0 ring-2 ring-paper-200" />
            ) : (
-            <div className="w-16 h-16 rounded-2xl bg-neutral-100 flex items-center justify-center flex-shrink-0">
-             <span className="text-3xl">{getPetEmoji(pet)}</span>
+            <div className={`w-16 h-16 rounded-3xl flex items-center justify-center flex-shrink-0 ${pColor.bg}`}>
+             <span className="text-3xl">{(() => { const cfg = getCategoryIcon(pet.categoryId); const Icon = cfg.Icon; return <Icon className={`w-10 h-10 ${pColor.text}`} strokeWidth={2} />; })()}</span>
             </div>
            )}
 
            <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-             <h3 className="font-bold text-text-primary truncate">{pet.name}</h3>
+             <h3 className={`font-bold truncate ${pColor.text}`}>{pet.name}</h3>
              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-              pet.gender === 'male' ? 'bg-blue-100 text-blue-600' :
-              pet.gender === 'female' ? 'bg-pink-100 text-pink-600' :
-              'bg-gray-100 text-gray-500'
+              pet.gender === 'male' ? 'bg-blue-50 text-blue-600' :
+              pet.gender === 'female' ? 'bg-pink-50 text-pink-600' :
+              'bg-paper-200 text-paper-600'
              }`}>
               {GENDERS.find(g => g.id === pet.gender)?.name || '未知'}
              </span>
             </div>
             <div className="flex items-center gap-2 text-xs text-text-muted mb-2">
-             <span className="px-2 py-0.5 bg-primary-50 text-primary-700 rounded-full font-medium">
+             <span className={`px-2 py-0.5 rounded-full font-medium ${pColor.bg} ${pColor.text}`}>
               {getPetBreedDisplay(pet)}
              </span>
             </div>
             <div className="flex items-center gap-2">
-             <span className="flex items-center gap-1 px-2.5 py-1 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-semibold rounded-xl shadow-sm">
-              <span>🎂</span> {getPetAge(pet)}
+             <span className={`flex items-center gap-1 px-2.5 py-1 text-white text-xs font-semibold rounded-2xl shadow-card bg-gradient-to-r ${pColor.btn}`}>
+              <Cake className="w-3.5 h-3.5" /> {getPetAge(pet)}
              </span>
-             <span className="flex items-center gap-1 px-2.5 py-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs font-semibold rounded-xl shadow-sm">
-              <span>🏠</span> {calculateDaysAtHome(pet.homeDate)}天
+             <span className={`flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-2xl shadow-card ${pColor.bg} ${pColor.text}`}>
+              <Home className="w-3.5 h-3.5" /> {calculateDaysAtHome(pet.homeDate)}天
              </span>
             </div>
            </div>
 
            <div className="flex gap-1">
             <button onClick={() => handleStartEdit(pet)}
-             className="p-2 hover:bg-gray-100 rounded-xl transition-colors" title="编辑">
+             className="p-2 hover:bg-paper-200 rounded-2xl transition-colors" title="编辑">
              <Edit3 className="w-4 h-4 text-text-muted" />
             </button>
             <button onClick={() => setShowPetMenu(showPetMenu === pet.id ? null : pet.id)}
-             className="p-2 hover:bg-gray-100 rounded-xl transition-colors" title="更多">
+             className="p-2 hover:bg-paper-200 rounded-2xl transition-colors" title="更多">
              <MoreVertical className="w-4 h-4 text-text-muted" />
             </button>
            </div>
@@ -452,13 +445,13 @@ export function Profile() {
          )}
 
          {showPetMenu === pet.id && !editingPet && (
-          <div className="mt-3 pt-3 border-t border-neutral-100 space-y-1 animate-slide-down">
+          <div className="mt-3 pt-3 border-t border-paper-200 space-y-1 animate-slide-down">
            <button onClick={() => { handleShowInviteCode(pet.id); setShowPetMenu(null); }}
-            className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-neutral-100 rounded-xl text-sm text-text-secondary font-medium transition-colors">
+            className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-paper-200 rounded-2xl text-sm text-text-secondary font-medium transition-colors">
             <Share2 className="w-4 h-4" /> 生成邀请码
            </button>
            <button onClick={() => { setShowDeleteConfirm(pet.id); setShowPetMenu(null); }}
-            className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-red-50 rounded-xl text-sm text-red-500 font-medium transition-colors">
+            className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-red-50 rounded-2xl text-sm text-red-500 font-medium transition-colors">
             <Trash2 className="w-4 h-4" /> 删除宝贝
            </button>
           </div>
@@ -469,14 +462,14 @@ export function Profile() {
            <p className="text-sm text-text-secondary mb-3">确定要删除 {pet.name} 吗？所有相关记录将被删除。</p>
            <div className="flex gap-3">
             <button onClick={() => setShowDeleteConfirm(null)}
-             className="flex-1 py-2.5 bg-gray-100 text-text-secondary rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors">取消</button>
+             className="flex-1 py-2.5 bg-paper-200 text-text-secondary rounded-2xl text-sm font-semibold hover:bg-paper-300 transition-colors">取消</button>
             <button onClick={() => handleDeletePet(pet.id)}
-             className="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors">删除</button>
+             className="flex-1 py-2.5 bg-red-500 text-white rounded-2xl text-sm font-semibold hover:bg-red-600 transition-colors">删除</button>
            </div>
           </div>
          )}
         </div>
-       ))}
+       );})}
       </div>
      )}
     </section>
@@ -484,16 +477,16 @@ export function Profile() {
     {/* 家庭共享 */}
     <section>
      <h2 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
-      <span>👨‍👩‍👧‍👦</span> 家庭共享
+      <Users className="w-5 h-5 text-paper-500" strokeWidth={2} /> 家庭共享
      </h2>
-     <div className="bg-white rounded-2xl border border-neutral-200 shadow-card overflow-hidden">
+     <div className="bg-surface rounded-2xl border-2 border-paper-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
       <button
        onClick={() => setShowJoinModal(true)}
-       className="w-full flex items-center justify-between p-4 hover:bg-neutral-50 transition-colors"
+       className="w-full flex items-center justify-between p-4 hover:bg-paper-100 transition-colors"
       >
        <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-accent-100 to-accent-200 flex items-center justify-center">
-         <Key className="w-5 h-5 text-accent-600" />
+        <div className="w-10 h-10 rounded-3xl bg-paper-200 flex items-center justify-center">
+         <Key className="w-5 h-5 text-paper-600" />
         </div>
         <div className="text-left">
          <p className="font-semibold text-text-primary">加入其他家庭</p>
@@ -510,8 +503,8 @@ export function Profile() {
    {showJoinModal && (
     <div className="fixed inset-0 z-[55] flex items-end justify-center">
      <div className="absolute inset-0 bg-black/50 " onClick={() => setShowJoinModal(false)} />
-     <div className="relative w-full max-w-[430px] bg-white rounded-t-3xl shadow-float p-6 pb-8 animate-slide-up">
-      <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-4" />
+     <div className="relative w-full max-w-[430px] bg-surface rounded-t-3xl shadow-float p-6 pb-8 animate-slide-up">
+      <div className="w-10 h-1 bg-paper-300 rounded-full mx-auto mb-4" />
       <h3 className="text-lg font-bold text-text-primary mb-2">加入其他家庭</h3>
       <p className="text-sm text-text-muted mb-4">输入家人分享的6位邀请码</p>
 
@@ -519,15 +512,15 @@ export function Profile() {
        <input
         type="text" value={inviteCodeInput}
         onChange={(e) => setInviteCodeInput(e.target.value.toUpperCase())}
-        className="w-full px-4 py-4 bg-neutral-50 border-2 border-neutral-200 rounded-2xl outline-none focus:border-neutral-400 focus:ring-4 focus:ring-neutral-100 transition-all text-center text-2xl font-mono tracking-widest font-bold"
+        className="w-full px-4 py-4 bg-paper-100 border-2 border-paper-300 rounded-3xl outline-none focus:border-paper-500 focus:ring-4 focus:ring-paper-200 transition-all text-center text-2xl font-mono tracking-widest font-bold"
         placeholder="A1B2C3" maxLength={6}
        />
 
        <div className="flex gap-3">
         <button onClick={() => setShowJoinModal(false)}
-         className="flex-1 py-3 bg-gray-100 text-text-secondary rounded-2xl font-semibold hover:bg-gray-200 transition-colors">取消</button>
+         className="flex-1 py-3 bg-paper-200 text-text-secondary rounded-3xl font-semibold hover:bg-paper-300 transition-colors">取消</button>
         <button onClick={handleJoinByInvite} disabled={inviteCodeInput.length !== 6}
-         className="flex-1 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-2xl font-semibold hover:from-primary-600 hover:to-primary-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-primary-200">加入</button>
+         className="flex-1 py-3 bg-paper-900 text-white rounded-3xl font-semibold hover:bg-paper-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-card">加入</button>
        </div>
       </div>
      </div>
@@ -538,24 +531,24 @@ export function Profile() {
    {showInviteCodeModal && (
     <div className="fixed inset-0 z-[55] flex items-center justify-center p-4">
      <div className="absolute inset-0 bg-black/50 " onClick={() => setShowInviteCodeModal(null)} />
-     <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-float p-6 animate-scale-in">
+     <div className="relative w-full max-w-sm bg-surface rounded-3xl shadow-float p-6 animate-scale-in">
       <div className="flex items-center justify-between mb-4">
        <h3 className="text-lg font-bold text-text-primary">邀请码</h3>
-       <button onClick={() => setShowInviteCodeModal(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+       <button onClick={() => setShowInviteCodeModal(null)} className="p-2 hover:bg-paper-200 rounded-full transition-colors">
         <X className="w-5 h-5 text-text-muted" />
        </button>
       </div>
 
       <p className="text-sm text-text-muted mb-4">分享此邀请码，让家人也能记录宝贝的成长</p>
 
-      <div className="bg-primary-50 rounded-2xl p-5 text-center mb-4">
-       <p className="text-3xl font-mono font-bold text-primary-600 tracking-widest">
+      <div className="bg-paper-200 rounded-2xl p-5 text-center mb-4">
+       <p className="text-3xl font-mono font-bold text-paper-800 tracking-widest">
         {generatedInviteCode}
        </p>
       </div>
 
       <button onClick={handleCopyInviteCode}
-       className="w-full py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-2xl font-semibold hover:from-primary-600 hover:to-primary-700 flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary-200">
+       className="w-full py-3.5 bg-paper-900 text-white rounded-3xl font-semibold hover:bg-paper-800 flex items-center justify-center gap-2 transition-all shadow-card">
        {copiedCode ? (
         <><Check className="w-5 h-5" /> 已复制</>
        ) : (
@@ -570,11 +563,11 @@ export function Profile() {
    {showAddForm && (
     <div className="fixed inset-0 z-[55] flex items-center justify-center p-4">
      <div className="absolute inset-0 bg-black/50 " onClick={() => setShowAddForm(false)} />
-     <div className="relative w-full max-w-md max-h-[90vh] bg-white rounded-3xl shadow-float overflow-y-auto animate-scale-in">
-      <div className="sticky top-0 bg-white z-10 px-6 pt-6 pb-4 border-b border-neutral-100">
+     <div className="relative w-full max-w-md max-h-[90vh] bg-surface rounded-3xl shadow-float overflow-y-auto animate-scale-in">
+      <div className="sticky top-0 bg-surface z-10 px-6 pt-6 pb-4 border-b border-paper-200">
        <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold text-text-primary">添加宝贝</h3>
-        <button onClick={() => setShowAddForm(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+        <button onClick={() => setShowAddForm(false)} className="p-2 hover:bg-paper-200 rounded-full transition-colors">
          <X className="w-5 h-5 text-text-muted" />
         </button>
        </div>
@@ -584,13 +577,13 @@ export function Profile() {
        <div className="flex flex-col items-center">
         <div className="relative">
          {formData.avatar ? (
-          <img src={formData.avatar} alt="宠物头像" className="w-24 h-24 rounded-2xl object-cover ring-4 ring-neutral-200" />
+          <img src={formData.avatar} alt="宠物头像" className="w-24 h-24 rounded-3xl object-cover ring-4 ring-neutral-200" />
          ) : (
-          <div className="w-24 h-24 rounded-2xl bg-neutral-100 flex items-center justify-center">
-           <PawPrint className="w-12 h-12 text-primary-400" />
+          <div className="w-24 h-24 rounded-3xl bg-paper-200 flex items-center justify-center">
+           <PawPrint className="w-12 h-12 text-paper-400" />
           </div>
          )}
-         <label className="absolute -bottom-2 -right-2 w-9 h-9 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-full flex items-center justify-center cursor-pointer hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg">
+         <label className="absolute -bottom-2 -right-2 w-9 h-9 bg-paper-800 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-paper-700 transition-all shadow-card">
           <Camera className="w-4 h-4" />
           <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
          </label>
@@ -601,7 +594,7 @@ export function Profile() {
        <div>
         <label className="block text-sm font-semibold text-text-primary mb-2">宠物名字 *</label>
         <input type="text" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-         className="w-full px-4 py-3 bg-neutral-50 border-2 border-neutral-200 rounded-2xl focus:border-neutral-400 focus:ring-4 focus:ring-neutral-100 outline-none transition-all"
+         className="w-full px-4 py-3 bg-paper-100 border-2 border-paper-300 rounded-3xl focus:border-paper-500 focus:ring-4 focus:ring-paper-200 outline-none transition-all"
          placeholder="给它起个名字" />
        </div>
 
@@ -610,10 +603,10 @@ export function Profile() {
         <div className="grid grid-cols-3 gap-3">
          {GENDERS.map((g) => (
           <button key={g.id} type="button" onClick={() => setFormData(prev => ({ ...prev, gender: g.id as any }))}
-           className={`flex items-center justify-center gap-2 py-3 rounded-2xl transition-all font-medium ${
+           className={`flex items-center justify-center gap-2 py-3 rounded-3xl transition-all font-medium ${
             formData.gender === g.id
-             ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-             : 'bg-gray-50 hover:bg-gray-100 text-text-secondary'
+             ? 'bg-paper-800 text-white shadow-card'
+             : 'bg-paper-100 hover:bg-paper-200 text-text-secondary'
            }`}
           >
            <span className="text-lg">{g.emoji}</span> <span className="text-sm">{g.name}</span>
@@ -627,20 +620,20 @@ export function Profile() {
         <div className="grid grid-cols-5 gap-2">
          {CATEGORIES.map((cat) => (
           <button key={cat.id} type="button" onClick={() => setFormData(prev => ({ ...prev, categoryId: cat.id, customBreed: '' }))}
-           className={`flex flex-col items-center p-2.5 rounded-2xl transition-all ${
+           className={`flex flex-col items-center p-2.5 rounded-3xl transition-all ${
             formData.categoryId === cat.id
-             ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md'
-             : 'bg-gray-50 hover:bg-gray-100 text-text-secondary'
+             ? 'bg-paper-800 text-white shadow-card'
+             : 'bg-paper-100 hover:bg-paper-200 text-text-secondary'
            }`}
           >
-           <span className="text-xl">{cat.emoji}</span>
+           {(() => { const cfg = getCategoryIcon(cat.id); const Icon = cfg.Icon; return <Icon className="w-6 h-6" strokeWidth={2} />; })()}
            <span className="text-xs mt-1 font-medium">{cat.name}</span>
           </button>
          ))}
         </div>
         <input type="text" value={formData.customBreed}
          onChange={(e) => setFormData(prev => ({ ...prev, customBreed: e.target.value, categoryId: 'other_pet' }))}
-         className="w-full px-4 py-3 bg-neutral-50 border-2 border-neutral-200 rounded-2xl focus:border-neutral-400 focus:ring-4 focus:ring-neutral-100 outline-none transition-all mt-2"
+         className="w-full px-4 py-3 bg-paper-100 border-2 border-paper-300 rounded-3xl focus:border-paper-500 focus:ring-4 focus:ring-paper-200 outline-none transition-all mt-2"
          placeholder="其他宝贝（如：乌龟、刺猬）" />
        </div>
 
@@ -648,23 +641,23 @@ export function Profile() {
         <label className="block text-sm font-semibold text-text-primary mb-2">出生日期</label>
         <div className="flex gap-2 mb-3">
          <button type="button" onClick={() => setFormData(prev => ({ ...prev, birthDateType: 'exact' }))}
-          className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${formData.birthDateType === 'exact' ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md' : 'bg-gray-50 hover:bg-gray-100 text-text-secondary'}`}>准确日期</button>
+          className={`flex-1 py-2.5 px-3 rounded-2xl text-sm font-medium transition-all ${formData.birthDateType === 'exact' ? 'bg-paper-800 text-white shadow-card' : 'bg-paper-100 hover:bg-paper-200 text-text-secondary'}`}>准确日期</button>
          <button type="button" onClick={() => setFormData(prev => ({ ...prev, birthDateType: 'estimated' }))}
-          className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${formData.birthDateType === 'estimated' ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md' : 'bg-gray-50 hover:bg-gray-100 text-text-secondary'}`}>大概估计</button>
+          className={`flex-1 py-2.5 px-3 rounded-2xl text-sm font-medium transition-all ${formData.birthDateType === 'estimated' ? 'bg-paper-800 text-white shadow-card' : 'bg-paper-100 hover:bg-paper-200 text-text-secondary'}`}>大概估计</button>
          <button type="button" onClick={() => setFormData(prev => ({ ...prev, birthDateType: 'unknown' }))}
-          className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${formData.birthDateType === 'unknown' ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md' : 'bg-gray-50 hover:bg-gray-100 text-text-secondary'}`}>未知</button>
+          className={`flex-1 py-2.5 px-3 rounded-2xl text-sm font-medium transition-all ${formData.birthDateType === 'unknown' ? 'bg-paper-800 text-white shadow-card' : 'bg-paper-100 hover:bg-paper-200 text-text-secondary'}`}>未知</button>
         </div>
         {formData.birthDateType === 'exact' && (
          <input type="date" value={formData.birthDate} onChange={(e) => setFormData(prev => ({ ...prev, birthDate: e.target.value }))}
           onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.form?.requestSubmit(); }}
-          className="w-full px-4 py-3 bg-neutral-50 border-2 border-neutral-200 rounded-2xl focus:border-neutral-400 focus:ring-4 focus:ring-neutral-100 outline-none transition-all" />
+          className="w-full px-4 py-3 bg-paper-100 border-2 border-paper-300 rounded-3xl focus:border-paper-500 focus:ring-4 focus:ring-paper-200 outline-none transition-all" />
         )}
         {formData.birthDateType === 'estimated' && (
          <div className="flex gap-2">
           <input type="number" value={formData.birthYear} onChange={(e) => setFormData(prev => ({ ...prev, birthYear: e.target.value }))}
-           className="flex-1 px-4 py-3 bg-neutral-50 border-2 border-neutral-200 rounded-2xl focus:border-neutral-400 outline-none transition-all" placeholder="年份（如：2020）" min="1990" max={new Date().getFullYear()} />
+           className="flex-1 px-4 py-3 bg-paper-100 border-2 border-paper-300 rounded-3xl focus:border-paper-500 outline-none transition-all" placeholder="年份（如：2020）" min="1990" max={new Date().getFullYear()} />
           <input type="number" value={formData.birthMonth} onChange={(e) => setFormData(prev => ({ ...prev, birthMonth: e.target.value }))}
-           className="w-28 px-4 py-3 bg-neutral-50 border-2 border-neutral-200 rounded-2xl focus:border-neutral-400 outline-none transition-all" placeholder="月份" min="1" max="12" />
+           className="w-28 px-4 py-3 bg-paper-100 border-2 border-paper-300 rounded-3xl focus:border-paper-500 outline-none transition-all" placeholder="月份" min="1" max="12" />
          </div>
         )}
        </div>
@@ -672,14 +665,15 @@ export function Profile() {
        <div>
         <label className="block text-sm font-semibold text-text-primary mb-2">到家日期 *</label>
         <input type="date" value={formData.homeDate} onChange={(e) => setFormData(prev => ({ ...prev, homeDate: e.target.value }))}
-         className="w-full px-4 py-3 bg-neutral-50 border-2 border-neutral-200 rounded-2xl focus:border-neutral-400 focus:ring-4 focus:ring-neutral-100 outline-none transition-all" />
+          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.form?.requestSubmit(); }}
+         className="w-full px-4 py-3 bg-paper-100 border-2 border-paper-300 rounded-3xl focus:border-paper-500 focus:ring-4 focus:ring-paper-200 outline-none transition-all" />
        </div>
 
        <div className="flex gap-3 pt-2 pb-6">
         <button type="button" onClick={() => setShowAddForm(false)}
-         className="flex-1 py-3 bg-gray-100 text-text-secondary rounded-2xl font-semibold hover:bg-gray-200 transition-colors">取消</button>
+         className="flex-1 py-3 bg-paper-200 text-text-secondary rounded-3xl font-semibold hover:bg-paper-300 transition-colors">取消</button>
         <button type="submit"
-         className="flex-1 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-2xl font-semibold hover:from-primary-600 hover:to-primary-700 transition-all shadow-lg shadow-primary-200">添加</button>
+         className="flex-1 py-3 bg-paper-900 text-white rounded-3xl font-semibold hover:bg-paper-800 transition-all shadow-card">添加</button>
        </div>
       </form>
      </div>

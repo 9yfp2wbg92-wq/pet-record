@@ -32,7 +32,9 @@
 
 ## Known Gaps
 
-1. **Shared user 可删除宠物** — `deletePet` 未区分 owner vs shared user (`usePetStore.ts:306`)
-2. **Shared user 可修改宠物信息** — `updatePet` 无权限区分 (`usePetStore.ts:201`)
+1. ~~Shared user 可删除宠物~~ — ✅ 已修复：`deletePet` 检查 `ownerUserId`（`usePetStore.ts:313`）
+2. ~~Shared user 可修改宠物信息~~ — ✅ 已修复：`updatePet` 检查 `ownerUserId`（`usePetStore.ts:205`）
 3. **无 RLS（Row-Level Security）** — 所有数据查询未按用户过滤，依赖前端展示逻辑
 4. **邀请码无过期/使用次数限制** — 一旦知道邀请码即可永久加入
+5. **Milestone 更新/删除** — ✅ 已修复：`updateMilestone`/`deleteMilestone` 增加了宠物归属检查
+6. **分享邀请码** — ✅ 已修复：`sharePet` 增加了所有权/共享用户检查

@@ -23,12 +23,12 @@ const colorMap: Record<string, string> = {
  bath: 'bg-cyan-500 text-white',
  neuter: 'bg-purple-500 text-white',
  anniversary: 'bg-yellow-500 text-white',
- custom: 'bg-gray-500 text-white',
+ custom: 'bg-paper-1000 text-white',
 };
 
 export function MilestoneItem({ milestone, isLeft = true }: MilestoneItemProps) {
  const Icon = iconMap[milestone.type] || Plus;
- const color = colorMap[milestone.type] || 'bg-gray-500 text-white';
+ const color = colorMap[milestone.type] || 'bg-paper-1000 text-white';
 
  let dateText: string;
  if (milestone.onlyMonth) {
@@ -51,7 +51,7 @@ export function MilestoneItem({ milestone, isLeft = true }: MilestoneItemProps) 
  return (
   <div className={`flex items-center gap-4 mb-8 ${isLeft ? 'flex-row' : 'flex-row-reverse'}`}>
    <div className={`flex-1 ${isLeft ? 'text-right' : 'text-left'}`}>
-    <div className="inline-block bg-surface p-4 rounded-xl shadow-sm border border-orange-100 animate-slide-up">
+    <div className="inline-block bg-surface p-4 rounded-2xl shadow-card border-2 border-wood-200 animate-slide-up">
      <h3 className="font-semibold text-text mb-1">{milestone.title}</h3>
      <p className="text-sm text-text-muted">{dateText}</p>
      {milestone.description && (

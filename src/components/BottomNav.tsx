@@ -12,7 +12,7 @@ export function BottomNav() {
  const location = useLocation();
 
  return (
-  <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-16 bg-white border-t border-neutral-200 z-50 safe-area-bottom">
+  <nav className="w-full h-16 bg-surface border-t border-paper-300 z-50 safe-area-bottom flex-shrink-0">
    <div className="flex justify-around items-center h-full px-2">
     {navItems.map((item) => {
      const isActive = location.pathname === item.path;
@@ -21,19 +21,19 @@ export function BottomNav() {
        key={item.path}
        to={item.path}
        className={`flex flex-col items-center justify-center flex-1 py-1 transition-all duration-200 relative ${
-        isActive ? 'text-primary-500' : 'text-text-muted hover:text-text-secondary'
+        isActive ? 'text-bloom-500' : 'text-text-muted hover:text-text-secondary'
        }`}
       >
        <div className={`relative mb-0.5 transition-transform duration-200 ${isActive ? 'scale-110' : 'scale-100'}`}>
         <item.icon
          className={`w-6 h-6 transition-all duration-200 ${
-          isActive ? 'fill-primary-100 stroke-primary-500' : ''
+          isActive ? 'fill-bloom-100 stroke-bloom-500' : ''
          }`}
          strokeWidth={isActive ? 2.5 : 1.5}
         />
         {item.path === '/ai' && (
          <div className={`absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full flex items-center justify-center ${
-          isActive ? 'bg-primary-500' : 'bg-neutral-300'
+          isActive ? 'bg-bloom-500' : 'bg-paper-400'
          }`}>
           <Sparkles className="w-2 h-2 text-white fill-white" />
          </div>
@@ -45,7 +45,7 @@ export function BottomNav() {
         {item.label}
        </span>
        {isActive && (
-        <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary-500 rounded-full" />
+        <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-bloom-500 rounded-full" />
        )}
       </Link>
      );

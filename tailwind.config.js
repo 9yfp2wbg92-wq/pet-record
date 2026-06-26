@@ -4,70 +4,103 @@ export default {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    container: {
-      center: true,
-    },
+    container: { center: true },
     extend: {
       colors: {
-        // 主色调：温暖但不泛滥 — 仅用于主要操作和选中态
-        primary: {
-          50: '#FFF7ED',
-          100: '#FFEDD5',
-          200: '#FED7AA',
-          300: '#FDBA74',
-          400: '#FB923C',
-          500: '#F97316',
-          600: '#EA580C',
-          700: '#C2410C',
-          800: '#9A3412',
-          900: '#7C2D12',
+        // 罗小黑战记 — 森林绿（主 accent，替代 Impeccable 橙色）
+        forest: {
+          50: '#EEF4EF',
+          100: '#D8E8DB',
+          200: '#A8C9AE',
+          300: '#8BB894',
+          400: '#7BA587',
+          500: '#5C8A68',
+          600: '#4A7355',
+          700: '#3A5C44',
+          800: '#2B4633',
+          900: '#1D3023',
         },
-        // 辅助色：薄荷绿 — 用于正向反馈、成功状态
-        accent: {
-          50: '#ECFDF5',
-          100: '#D1FAE5',
-          200: '#A7F3D0',
-          300: '#6EE7B7',
-          400: '#34D399',
-          500: '#10B981',
-          600: '#059669',
-          700: '#047857',
-          800: '#065F46',
-          900: '#064E3B',
+        // 暖木棕（温暖 accent，用于 Profile/Home）
+        wood: {
+          50: '#F8F3EB',
+          100: '#F0E6D6',
+          200: '#DDCFB8',
+          300: '#C4A882',
+          400: '#B09068',
+          500: '#9A7B54',
+          600: '#7D6342',
+          700: '#5F4A31',
+          800: '#423322',
+          900: '#2B1F14',
         },
-        // 中性色阶 — 替代暖色调背景，chroma 0 纯中性
-        neutral: {
-          50: '#FAFAFA',
-          100: '#F5F5F5',
-          200: '#E5E5E5',
-          300: '#D4D4D4',
-          400: '#A3A3A3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
+        // 琥珀金（灵力光晕，仅用于 AI/提醒高亮）
+        amber: {
+          50: '#FEF9EC',
+          100: '#FCEFC6',
+          200: '#F5DFA0',
+          300: '#E8B44F',
+          400: '#D99E2E',
+          500: '#B87D1E',
+          600: '#935F14',
+          700: '#704312',
+          800: '#4A2B0E',
+          900: '#2E1A09',
         },
-        // 语义色
-        surface: '#FFFFFF',
-        background: '#FAFAFA',
+        // 湖蓝（次要强调，用于链接/次要按钮）
+        lake: {
+          50: '#EEF6F9',
+          100: '#D4EAF1',
+          200: '#A8D4E3',
+          300: '#6BA3BE',
+          400: '#4A8BA8',
+          500: '#38708A',
+          600: '#2D5A6E',
+          700: '#244757',
+          800: '#1C3541',
+          900: '#13242D',
+        },
+        // 花粉粉（logo 主色调，用于导航激活态）
+        bloom: {
+          50: '#FEF5F6',
+          100: '#FDE8EB',
+          200: '#FAD0D6',
+          300: '#F5A8B4',
+          400: '#F08090',
+          500: '#E85D72',
+          600: '#D43D55',
+          700: '#B12C43',
+          800: '#932738',
+          900: '#7A2433',
+        },
+        // 宣纸/墨色（表面和文字）
+        paper: {
+          50: '#FDFBF7',
+          100: '#FBF8F2',
+          200: '#F5F0E8',
+          300: '#E8E0D2',
+          400: '#D4C9B5',
+          500: '#B8AA92',
+          600: '#968A7C',
+          700: '#5C5244',
+          800: '#3D3226',
+          900: '#2C2416',
+        },
+        surface: '#FBF8F2',
+        background: '#F5F0E8',
         text: {
-          primary: '#171717',
-          secondary: '#525252',
-          muted: '#A3A3A3',
+          primary: '#2C2416',
+          secondary: '#5C5244',
+          muted: '#968A7C',
         },
       },
       fontFamily: {
         sans: ['"Noto Sans SC"', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Noto Sans SC"', 'system-ui', 'sans-serif'],
+        display: ['"Nunito"', '"Noto Sans SC"', 'sans-serif'],
         number: ['"SF Mono"', '"Monaco"', '"Inconsolata"', 'monospace'],
       },
-      fontWeight: {
-        normal: '400',
-        medium: '500',
-        semibold: '600',
-        bold: '700',
-        extrabold: '800',
+      borderWidth: {
+        '2': '2px',
+        '3': '3px',
       },
       borderRadius: {
         'xl': '0.75rem',
@@ -76,16 +109,15 @@ export default {
         '4xl': '1.5rem',
       },
       boxShadow: {
-        'soft': '0 2px 16px rgba(0,0,0,0.06)',
-        'card': '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)',
-        'float': '0 10px 40px -10px rgba(0,0,0,0.1), 0 2px 10px -2px rgba(0,0,0,0.04)',
+        'soft': '0 2px 16px rgba(44,36,22,0.06)',
+        'card': '0 1px 3px rgba(44,36,22,0.04)',
+        'float': '0 8px 32px rgba(44,36,22,0.08)',
+        'glow': '0 0 24px rgba(232,180,79,0.25)',
       },
       animation: {
         "fade-in": "fadeIn 0.2s ease-out",
         "slide-up": "slideUp 0.25s ease-out",
-        "slide-down": "slideDown 0.2s ease-out",
         "scale-in": "scaleIn 0.2s ease-out",
-        "float": "float 3s ease-in-out infinite",
       },
       keyframes: {
         fadeIn: {
@@ -93,20 +125,12 @@ export default {
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { transform: "translateY(16px)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" },
-        },
-        slideDown: {
-          "0%": { transform: "translateY(-8px)", opacity: "0" },
+          "0%": { transform: "translateY(12px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
         scaleIn: {
           "0%": { transform: "scale(0.95)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
-        },
-        float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-8px)" },
         },
       },
     },

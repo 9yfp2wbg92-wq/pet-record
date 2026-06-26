@@ -76,7 +76,7 @@ export function MemePage() {
 
  return (
   <div className="min-h-screen bg-background pb-20">
-   <div className="bg-surface border-b border-orange-100 sticky top-0 z-40 shadow-sm">
+   <div className="bg-surface border-b border-wood-200 sticky top-0 z-40 shadow-card">
     <div className="max-w-md mx-auto px-4 py-4 flex items-center gap-3">
      {displayPet?.avatar ? (
       <img
@@ -100,10 +100,10 @@ export function MemePage() {
    </div>
 
    <div className="max-w-md mx-auto px-4 pt-6">
-    <div className="bg-surface rounded-2xl p-6 shadow-sm border border-orange-100 mb-6">
+    <div className="bg-surface rounded-3xl p-6 shadow-card border-2 border-wood-200 mb-6">
      {!selectedImage ? (
       <label className="block cursor-pointer">
-       <div className="border-2 border-dashed border-orange-300 rounded-xl p-8 text-center hover:border-primary hover:bg-primary/5 transition-all">
+       <div className="border-2 border-dashed border-orange-300 rounded-2xl p-8 text-center hover:border-primary hover:bg-primary/5 transition-all">
         <ImagePlus className="w-12 h-12 mx-auto text-text-muted mb-3" />
         <p className="text-text-muted">点击上传图片</p>
         <p className="text-xs text-text-muted mt-1">支持 JPG、PNG 格式</p>
@@ -122,7 +122,7 @@ export function MemePage() {
          ref={imageRef}
          src={selectedImage}
          alt="原图"
-         className="w-full rounded-xl max-h-64 object-contain"
+         className="w-full rounded-2xl max-h-64 object-contain"
          crossOrigin="anonymous"
         />
         <button
@@ -130,7 +130,7 @@ export function MemePage() {
           setSelectedImage(null);
           setShowGenerated(false);
          }}
-         className="absolute top-2 right-2 w-8 h-8 bg-gray-800 text-white rounded-full flex items-center justify-center hover:bg-gray-700"
+         className="absolute top-2 right-2 w-8 h-8 bg-paper-800 text-white rounded-full flex items-center justify-center hover:bg-paper-800"
         >
          ×
         </button>
@@ -146,7 +146,7 @@ export function MemePage() {
             setSelectedStyle(style);
             setShowGenerated(false);
            }}
-           className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+           className={`py-2 px-3 rounded-xl text-sm font-medium transition-all ${
             selectedStyle.id === style.id
              ? 'bg-primary text-white'
              : 'bg-orange-100 text-text hover:bg-orange-200'
@@ -167,14 +167,14 @@ export function MemePage() {
           setCustomText(e.target.value);
           setShowGenerated(false);
          }}
-         className="w-full px-4 py-3 rounded-xl border border-orange-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-orange-50/50"
+         className="w-full px-4 py-3 rounded-2xl border-2 border-orange-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-orange-50/50"
          placeholder="输入文字..."
         />
        </div>
 
        <button
         onClick={handleGenerate}
-        className="w-full py-3 bg-secondary text-white rounded-xl font-semibold hover:bg-orange-600 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-sm"
+        className="w-full py-3 bg-secondary text-white rounded-2xl font-semibold hover:bg-orange-600 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-card"
        >
         <Smile className="w-5 h-5" />
         生成表情包
@@ -184,24 +184,24 @@ export function MemePage() {
     </div>
 
     {showGenerated && generatedMeme && (
-     <div className="bg-surface rounded-2xl p-6 shadow-sm border border-orange-100 mb-6 animate-fade-in">
+     <div className="bg-surface rounded-3xl p-6 shadow-card border-2 border-wood-200 mb-6 animate-fade-in">
       <h3 className="font-semibold text-text mb-3">生成结果</h3>
       <img
        src={generatedMeme}
        alt="生成的表情包"
-       className="w-full rounded-xl mb-4"
+       className="w-full rounded-2xl mb-4"
       />
       <div className="flex gap-3">
        <button
         onClick={handleDownload}
-        className="flex-1 py-2 bg-orange-100 text-text rounded-xl font-medium hover:bg-orange-200 transition-all flex items-center justify-center gap-2"
+        className="flex-1 py-2 bg-orange-100 text-text rounded-2xl font-medium hover:bg-orange-200 transition-all flex items-center justify-center gap-2"
        >
         <Download className="w-4 h-4" />
         下载
        </button>
        <button
         onClick={handleSave}
-        className="flex-1 py-2 bg-primary text-white rounded-xl font-medium hover:bg-orange-600 transition-all shadow-sm"
+        className="flex-1 py-2 bg-primary text-white rounded-2xl font-medium hover:bg-orange-600 transition-all shadow-card"
        >
         保存
        </button>
@@ -218,7 +218,7 @@ export function MemePage() {
          key={meme.id}
          src={meme.image}
          alt="表情包"
-         className="w-full aspect-square object-cover rounded-xl"
+         className="w-full aspect-square object-cover rounded-2xl"
         />
        ))}
       </div>

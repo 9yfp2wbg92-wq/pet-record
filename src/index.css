@@ -19,7 +19,8 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: #FAFAFA;
+  /* 宣纸底色 — 罗小黑自然色调 */
+  background: #F5F0E8;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -29,14 +30,20 @@ body {
   width: 100%;
   max-width: 430px;
   min-height: 100vh;
-  background-color: #FAFAFA;
+  background-color: #F5F0E8;
   position: relative;
 }
 
 @media (min-width: 431px) {
   #root {
-    border-left: 1px solid #E5E5E5;
-    border-right: 1px solid #E5E5E5;
+    border: 2px solid #D4C9B5;
+    border-radius: 24px;
+  }
+  /* 让 fixed 弹窗约束在手机框内，而不是溢出到整个视口 */
+  .app-frame {
+    overflow: hidden;
+    border-radius: 24px;
+    transform: translateZ(0); /* 创建 fixed 的包含块 */
   }
 }
 
@@ -44,7 +51,6 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* 数字专用字体 */
 .number-font {
   font-family: "SF Mono", "Monaco", "Inconsolata", monospace;
   font-feature-settings: "tnum";
@@ -52,16 +58,9 @@ body {
 }
 
 /* 自定义滚动条 */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #E5E5E5;
-  border-radius: 2px;
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D4C9B5; border-radius: 2px; }
 
 /* 骨架屏 */
 @keyframes shimmer {
@@ -69,7 +68,7 @@ body {
   100% { background-position: 200% 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, #F5F5F5 25%, #FAFAFA 50%, #F5F5F5 75%);
+  background: linear-gradient(90deg, #E8E0D2 25%, #F5F0E8 50%, #E8E0D2 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -81,19 +80,16 @@ body {
   100% { background-position: 0% 50%; }
 }
 .ai-loading-bar {
-  background: linear-gradient(90deg, #F97316, #FB923C, #FBBF24, #FB923C, #F97316);
+  background: linear-gradient(90deg, #7BA587, #A8C9AE, #E8B44F, #A8C9AE, #7BA587);
   background-size: 300% 100%;
   animation: gradientFlow 1.5s ease-in-out infinite;
 }
 
-/* 隐藏滚动条 */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
 
 /* prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {

@@ -28,6 +28,7 @@ interface AppState {
   
   // 动态操作
   addPost: (post: Omit<Post, 'id' | 'authorUserId' | 'comments' | 'likes'>) => void;
+  deletePost: (id: string) => void;
   addComment: (postId: string, comment: Omit<Comment, 'id' | 'authorUserId'>) => void;
   toggleLike: (postId: string) => void;
   
@@ -334,8 +335,12 @@ export const usePetStore = create<AppState>((set, get) => ({
 
   sharePet: (petId) => {
     const state = get();
+    if (!state.currentUser) throw new Error('请先登录');
     const pet = state.pets.find(p => p.id === petId);
     if (!pet) throw new Error('宠物不存在');
+    const isOwner = pet.ownerUserId === state.currentUser.id;
+    const isShared = pet.sharedUserIds.includes(state.currentUser.id);
+    if (!isOwner && !isShared) throw new Error('无权查看该宠物的邀请码');
     return pet.inviteCode;
   },
 
@@ -392,6 +397,20 @@ export const usePetStore = create<AppState>((set, get) => ({
     set(state => ({
       ...state,
       posts: [...state.posts, newPost],
+    }));
+  },
+
+  deletePost: (id) => {
+    const state = get();
+    if (!state.currentUser) return;
+    const post = state.posts.find(p => p.id === id);
+    if (!post) return;
+    // 只有作者本人可以删除
+    if (post.authorUserId && post.authorUserId !== state.currentUser.id) return;
+    storage.deletePost(id);
+    set(state => ({
+      ...state,
+      posts: state.posts.filter(p => p.id !== id),
     }));
   },
 
@@ -490,6 +509,15 @@ export const usePetStore = create<AppState>((set, get) => ({
   },
 
   updateMilestone: (milestone) => {
+    const state = get();
+    // 验证里程碑存在且属于当前用户的宠物
+    const existing = state.milestones.find(m => m.id === milestone.id);
+    if (!existing) return;
+    const pet = state.pets.find(p => p.id === existing.petId);
+    if (!pet) return;
+    const isOwner = pet.ownerUserId === state.currentUser?.id;
+    const isShared = state.currentUser && pet.sharedUserIds.includes(state.currentUser.id);
+    if (!isOwner && !isShared) return;
     storage.updateMilestone(milestone);
     set(state => ({
       ...state,
@@ -498,6 +526,14 @@ export const usePetStore = create<AppState>((set, get) => ({
   },
 
   deleteMilestone: (id) => {
+    const state = get();
+    const existing = state.milestones.find(m => m.id === id);
+    if (!existing) return;
+    const pet = state.pets.find(p => p.id === existing.petId);
+    if (!pet) return;
+    const isOwner = pet.ownerUserId === state.currentUser?.id;
+    const isShared = state.currentUser && pet.sharedUserIds.includes(state.currentUser.id);
+    if (!isOwner && !isShared) return;
     storage.deleteMilestone(id);
     set(state => ({
       ...state,

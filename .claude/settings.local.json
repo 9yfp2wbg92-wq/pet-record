@@ -13,7 +13,13 @@
       "Bash(xxd)",
       "Bash(mkdir -p ~/.claude/skills)",
       "Bash(cp -r /tmp/cinematic-ui ~/.claude/skills/)",
-      "Bash(rm -rf /tmp/cinematic-ui && echo \"Cleaned up temp files\")"
+      "Bash(rm -rf /tmp/cinematic-ui && echo \"Cleaned up temp files\")",
+      "Bash(unzip -o /tmp/gh.zip -d /tmp/gh_extract)",
+      "Bash(sudo cp /tmp/gh_extract/gh_2.95.0_macOS_arm64/bin/gh /usr/local/bin/)",
+      "Bash(chmod +x /usr/local/bin/gh)",
+      "Bash(rm -rf /tmp/gh.zip /tmp/gh_extract)",
+      "Bash(gh --version)",
+      "Bash(python3)"
     ],
     "additionalDirectories": [
       "/private/tmp/cinematic-ui"

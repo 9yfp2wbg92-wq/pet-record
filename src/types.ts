@@ -41,6 +41,7 @@ export interface Like {
 export interface Post {
   id: string;
   petId: string;
+  petIds?: string[]; // 多宠物动态（一条动态涉及多个宝贝）
   authorUserId?: string;
   author?: string;
   content: string;

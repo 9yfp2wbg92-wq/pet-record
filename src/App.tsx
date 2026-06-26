@@ -30,21 +30,23 @@ export default function App() {
      path="/*"
      element={
       <ProtectedRoute>
-       <div className="min-h-screen bg-background">
-        <Routes>
-         <Route
-          path="/"
-          element={
-           <>
-            <PetSelector />
-            <Home />
-           </>
-          }
-         />
-         <Route path="/timeline" element={<Timeline />} />
-         <Route path="/ai" element={<AIInsights />} />
-         <Route path="/profile" element={<Profile />} />
-        </Routes>
+       <div className="flex flex-col h-dvh bg-background app-frame">
+        <div className="flex-1 overflow-y-auto">
+         <Routes>
+          <Route
+           path="/"
+           element={
+            <>
+             <PetSelector />
+             <Home />
+            </>
+           }
+          />
+          <Route path="/timeline" element={<Timeline />} />
+          <Route path="/ai" element={<AIInsights />} />
+          <Route path="/profile" element={<Profile />} />
+         </Routes>
+        </div>
         <BottomNav />
        </div>
       </ProtectedRoute>
