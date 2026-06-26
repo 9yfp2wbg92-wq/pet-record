@@ -128,7 +128,7 @@ export function Profile() {
   }
  };
 
- const handleAddSubmit = (e: React.FormEvent) => {
+ const handleAddSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   // 检查必填字段
   const missingFields: string[] = [];
@@ -140,7 +140,7 @@ export function Profile() {
    return;
   }
 
-  const newPet = addPet({
+  const newPet = await addPet({
    name: formData.name.trim(),
    categoryId: formData.categoryId,
    customBreed: formData.customBreed || undefined,
@@ -279,7 +279,7 @@ export function Profile() {
          return (
         <div
          key={pet.id}
-         className={`bg-surface rounded-2xl p-4 border-2 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-shadow ${pColor.border}`}
+         className="bg-surface rounded-2xl p-4 border-2 border-paper-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)] transition-shadow"
         >
          {editingPet?.id === pet.id ? (
           <div className="space-y-4">
@@ -397,41 +397,42 @@ export function Profile() {
           </div>
          ) : (
           <div className="flex items-center gap-4">
-           {pet.avatar ? (
-            <img src={pet.avatar} alt={pet.name} className="w-16 h-16 rounded-3xl object-cover flex-shrink-0 ring-2 ring-paper-200" />
-           ) : (
-            <div className={`w-16 h-16 rounded-3xl flex items-center justify-center flex-shrink-0 ${pColor.bg}`}>
-             <span className="text-3xl">{(() => { const cfg = getCategoryIcon(pet.categoryId); const Icon = cfg.Icon; return <Icon className={`w-10 h-10 ${pColor.text}`} strokeWidth={2} />; })()}</span>
-            </div>
-           )}
+           {/* 左侧彩色细线 + 头像 */}
+           <div className="relative flex-shrink-0">
+            <div className={`absolute left-0 top-1 bottom-1 w-1 rounded-full ${pColor.dot}`} />
+            {pet.avatar ? (
+             <img src={pet.avatar} alt={pet.name} className="w-14 h-14 ml-2 rounded-2xl object-cover ring-1 ring-paper-200" />
+            ) : (
+             <div className="w-14 h-14 ml-2 rounded-2xl bg-paper-200 flex items-center justify-center">
+              {(() => { const cfg = getCategoryIcon(pet.categoryId); const Icon = cfg.Icon; return <Icon className="w-8 h-8 text-paper-500" strokeWidth={2} />; })()}
+             </div>
+            )}
+           </div>
 
            <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-             <h3 className={`font-bold truncate ${pColor.text}`}>{pet.name}</h3>
-             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-              pet.gender === 'male' ? 'bg-blue-50 text-blue-600' :
-              pet.gender === 'female' ? 'bg-pink-50 text-pink-600' :
-              'bg-paper-200 text-paper-600'
+            <div className="flex items-center gap-2 mb-0.5">
+             <h3 className="font-bold text-paper-900 truncate">{pet.name}</h3>
+             <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium ${
+              pet.gender === 'male' ? 'bg-blue-50 text-blue-500' :
+              pet.gender === 'female' ? 'bg-pink-50 text-pink-500' :
+              'bg-paper-200 text-paper-500'
              }`}>
               {GENDERS.find(g => g.id === pet.gender)?.name || '未知'}
              </span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-text-muted mb-2">
-             <span className={`px-2 py-0.5 rounded-full font-medium ${pColor.bg} ${pColor.text}`}>
-              {getPetBreedDisplay(pet)}
-             </span>
-            </div>
+            <p className="text-xs text-paper-500 mb-1.5">{getPetBreedDisplay(pet)}</p>
             <div className="flex items-center gap-2">
-             <span className={`flex items-center gap-1 px-2.5 py-1 text-white text-xs font-semibold rounded-2xl shadow-card bg-gradient-to-r ${pColor.btn}`}>
-              <Cake className="w-3.5 h-3.5" /> {getPetAge(pet)}
+             <span className="flex items-center gap-1 text-xs text-paper-600">
+              <Cake className="w-3 h-3" /> {getPetAge(pet)}
              </span>
-             <span className={`flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-2xl shadow-card ${pColor.bg} ${pColor.text}`}>
-              <Home className="w-3.5 h-3.5" /> {calculateDaysAtHome(pet.homeDate)}天
+             <span className="text-paper-400 text-xs">·</span>
+             <span className="flex items-center gap-1 text-xs text-paper-600">
+              <Home className="w-3 h-3" /> {calculateDaysAtHome(pet.homeDate)}天
              </span>
             </div>
            </div>
 
-           <div className="flex gap-1">
+           <div className="flex gap-0.5">
             <button onClick={() => handleStartEdit(pet)}
              className="p-2 hover:bg-paper-200 rounded-2xl transition-colors" title="编辑">
              <Edit3 className="w-4 h-4 text-text-muted" />

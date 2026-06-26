@@ -46,7 +46,7 @@ export function PetSelector() {
               >
                 <div className="relative">
                   {pet.avatar ? (
-                    <div className={`w-7 h-7 rounded-full overflow-hidden ring-1 ${isActive ? 'ring-white/50' : 'ring-white'}`}>
+                    <div className={`w-8 h-8 rounded-full overflow-hidden ring-1 ${isActive ? 'ring-white/50' : 'ring-white'}`}>
                       <img src={pet.avatar} alt={pet.name} className="w-full h-full object-cover" />
                     </div>
                   ) : (

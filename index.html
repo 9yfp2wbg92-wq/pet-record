@@ -10,7 +10,7 @@
     <title>宠记 - 宝贝成长记录</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Ma+Shan+Zheng&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <script type="module">
       if (import.meta.hot?.on) {
         import.meta.hot.on('vite:error', (error) => {
@@ -24,6 +24,12 @@
     </script>
   </head>
   <body>
+    <script>
+      if (!localStorage.getItem('_pet_init')) {
+        Object.keys(localStorage).filter(k=>k.startsWith('pet_tracker')).forEach(k=>localStorage.removeItem(k));
+        localStorage.setItem('_pet_init','1');
+      }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

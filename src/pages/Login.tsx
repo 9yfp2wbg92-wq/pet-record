@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Camera, User, ArrowRight, Sparkles } from 'lucide-react';
 import { usePetStore } from '../hooks/usePetStore';
 
 export function Login() {
  const navigate = useNavigate();
- const { registerUser, switchUser, users } = usePetStore();
+ const { registerUser, switchUser, users, _seedInitialData } = usePetStore();
  const [name, setName] = useState('');
  const [avatar, setAvatar] = useState('');
- const [showForm, setShowForm] = useState(users.length === 0);
+ const [showForm, setShowForm] = useState(false);
+ const hasUsers = users.length > 0;
+
+ // 如果没有用户数据，自动播种 Demo
+ useEffect(() => {
+  if (users.length === 0) {
+   _seedInitialData();
+  }
+ }, [users.length]);
 
  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
@@ -46,7 +54,7 @@ export function Login() {
       </div>
      </div>
      {/* 标题 — 马山正毛笔手写体 */}
-     <h1 className="text-6xl text-paper-900" style={{ fontFamily: '"Ma Shan Zheng", "Noto Serif SC", "STKaiti", "KaiTi", cursive', fontWeight: 400, letterSpacing: '0.15em', textShadow: '2px 2px 0 rgba(44,36,22,0.05)' }}>
+     <h1 className="text-6xl text-paper-900" style={{ fontFamily: '"STKaiti", "KaiTi", "Noto Serif SC", serif', fontWeight: 400, letterSpacing: '0.15em', textShadow: '2px 2px 0 rgba(44,36,22,0.05)' }}>
       宠 记
      </h1>
      <p className="text-paper-500 text-sm mt-4 tracking-[0.25em] font-medium">
@@ -55,7 +63,7 @@ export function Login() {
     </div>
 
     {/* 用户已存在时显示账号列表 */}
-    {!showForm && users.length > 0 ? (
+    {!showForm && hasUsers ? (
      <div className="space-y-3 animate-fade-in">
       {users.map((user) => (
        <button

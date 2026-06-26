@@ -3,6 +3,10 @@ dist
 .DS_Store
 *.local
 
+# 环境变量
+.env
+.env.local
+
 # AI 工具工作目录
 .cinematic/
 .trae/

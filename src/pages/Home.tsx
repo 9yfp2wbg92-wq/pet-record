@@ -97,7 +97,7 @@ export function Home() {
      petIds: result.detected_pet_names?.map(n => pets.find(p => p.name === n)?.id).filter(Boolean) as string[] || undefined,
      content,
      media: selectedImages,
-     author: currentUser?.name || '我',
+     author: currentUser?.name || '安提尔',
      createdAt: new Date().toISOString(),
      isAI: false,
      comments: [],
@@ -116,7 +116,7 @@ export function Home() {
    petIds: selectedPetIds.length > 1 ? selectedPetIds : undefined,
    content,
    media: selectedImages,
-   author: currentUser?.name || '我',
+   author: currentUser?.name || '安提尔',
    createdAt: new Date().toISOString(),
    isAI: true,
    comments: [],
@@ -303,12 +303,12 @@ export function Home() {
          <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-paper-200 flex items-center justify-center">
            <span className="text-sm font-bold text-accent-600">
-            {(post.author || '我').charAt(0)}
+            {(post.author || '安提尔').charAt(0)}
            </span>
           </div>
           <div>
            <p className="font-semibold text-text-primary text-sm">
-            {post.author || '未知作者'}
+            {post.author || '安提尔'}
             {(post.petIds && post.petIds.length > 1
               ? post.petIds.map(pid => pets.find(p => p.id === pid)).filter(Boolean).map((p, i) => {
                   const pIdx = pets.findIndex(pt => pt.id === p!.id);

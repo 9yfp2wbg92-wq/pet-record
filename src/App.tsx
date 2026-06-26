@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Timeline } from './pages/Timeline';
@@ -15,11 +14,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
- const { loadData, currentUser } = usePetStore();
-
- useEffect(() => {
-  loadData();
- }, [loadData]);
+ const { currentUser } = usePetStore();
 
  return (
   <Router>
