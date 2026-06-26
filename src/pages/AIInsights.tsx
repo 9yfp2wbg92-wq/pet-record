@@ -119,7 +119,7 @@ export function AIInsights() {
     }
    }
 
-   let warning = "暂无异常记录，继续保持良好的护理习惯。";
+   let warning = "最近状态不错，继续保持哦。";
    if (abnormalRecords.length > 0) {
     warning = `⚠️ 本月有 ${abnormalRecords.length} 次异常记录，${abnormalRecords.some(r => r.description?.includes('拉稀')) ? '包括轻微拉稀，' : ''}建议继续观察并注意保暖和饮食卫生。`;
    }
@@ -133,7 +133,7 @@ export function AIInsights() {
    if (needs.length > 0) {
     suggestion = `建议：${needs.join('；')}。定期记录有助于及时发现健康问题。`;
    } else {
-    suggestion = '目前各项护理都很到位，继续保持定期记录的好习惯！';
+    suggestion = '各项护理都很到位，继续加油！';
    }
 
    setHealthReport({ hasWarningAlert: abnormalRecords.length > 0,
@@ -199,9 +199,9 @@ export function AIInsights() {
        <Sparkles className="w-5 h-5 text-white" />
       </div>
       <div>
-       <h1 className="text-xl font-bold text-text-primary">AI 护理看板</h1>
+       <h1 className="text-xl font-bold text-text-primary">AI 管家</h1>
        <p className="text-sm text-text-muted">
-        {selectedPet ? `${selectedPet.name}的健康分析` : '选择宝贝开始分析'}
+        {selectedPet ? `${selectedPet.name}的健康陪伴` : '选择宝贝，开始陪伴'}
        </p>
       </div>
      </div>
@@ -238,7 +238,7 @@ export function AIInsights() {
       <Sparkles className="w-12 h-12 text-paper-500" />
      </div>
      <p className="text-text-secondary font-medium text-lg">请先选择一个宝贝</p>
-     <p className="text-text-muted text-sm mt-1">选择后即可查看健康分析</p>
+     <p className="text-text-muted text-sm mt-1">选择后即可开始陪伴</p>
     </div>
    ) : (
     <div className="max-w-md mx-auto px-4 py-6 space-y-6">
@@ -251,25 +251,25 @@ export function AIInsights() {
          <div className="w-9 h-9 rounded-full bg-paper-800 flex items-center justify-center">
           <Sparkles className="w-5 h-5 text-white" />
          </div>
-         <h2 className="text-lg font-bold text-text-primary">30天健康报告</h2>
+         <h2 className="text-lg font-bold text-text-primary">30天健康小结</h2>
         </div>
 
         {loading ? (
          <div className="flex items-center justify-center gap-3 py-8">
           <div className="w-8 h-8 border-3 border-paper-300 border-t-paper-600 rounded-full animate-spin" />
-          <span className="text-text-secondary font-medium">AI正在分析中...</span>
+          <span className="text-text-secondary font-medium">正在为宝贝整理中...</span>
          </div>
         ) : healthReport ? (
          <div className="space-y-3">
           <div className="bg-surface rounded-2xl p-4 ">
-           <p className="text-sm font-semibold text-paper-700 mb-1">整体状态</p>
+           <p className="text-sm font-semibold text-paper-700 mb-1">整体情况</p>
            <p className="text-sm text-text-secondary leading-relaxed">{healthReport.overall}</p>
           </div>
 
           <div className={`bg-surface rounded-2xl p-4 ${
            healthReport.hasWarningAlert ? 'border-2 border-red-200 bg-red-50/30' : ''
           }`}>
-           <p className="text-sm font-semibold text-red-500 mb-1">异常警示</p>
+           <p className="text-sm font-semibold text-red-500 mb-1">需要注意</p>
            <p className={`text-sm leading-relaxed ${
             healthReport.hasWarningAlert ? 'text-red-600' : 'text-text-secondary'
            }`}>
@@ -278,7 +278,7 @@ export function AIInsights() {
           </div>
 
           <div className="bg-surface rounded-2xl p-4 ">
-           <p className="text-sm font-semibold text-paper-700 mb-1">护理建议</p>
+           <p className="text-sm font-semibold text-paper-700 mb-1">贴心建议</p>
            <p className="text-sm text-text-secondary leading-relaxed">{healthReport.suggestion}</p>
           </div>
 
@@ -301,19 +301,19 @@ export function AIInsights() {
           {milestoneCount === 0 ? (
            <>
             <p className="text-text-secondary font-medium">
-             {selectedPet?.name || '宝贝'}还在等待你的第一条记录
+             {selectedPet?.name || '宝贝'}还在等你记录第一件小事
             </p>
             <p className="text-text-muted text-sm mt-1">
-             快去记录页写点什么吧！
+             去记录页写点什么吧～
             </p>
            </>
           ) : (
            <>
             <p className="text-text-secondary font-medium">
-             {selectedPet?.name || '宝贝'}已有一条记录啦！
+             {selectedPet?.name || '宝贝'}已经有第一条记录啦！
             </p>
             <p className="text-text-muted text-sm mt-1">
-             再记录一条即可解锁AI智能总结！
+             再记一条，就能解锁专属小结啦！
             </p>
            </>
           )}
@@ -325,7 +325,7 @@ export function AIInsights() {
           onClick={generateHealthReport}
           className="w-full mt-4 py-3 bg-paper-200 text-paper-700 rounded-2xl font-semibold hover:bg-paper-300 transition-colors border-2 border-dashed border-paper-400"
          >
-          重新生成报告
+          刷新小结
          </button>
         )}
        </div>
@@ -336,7 +336,7 @@ export function AIInsights() {
      <section>
       <h2 className="text-lg font-bold text-text-primary mb-3 flex items-center gap-2">
        <Clock className="w-5 h-5 text-text-muted" />
-       护理倒计时
+       下次护理
       </h2>
 
       {reminders.length === 0 ? (
@@ -344,8 +344,8 @@ export function AIInsights() {
         <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-paper-200 flex items-center justify-center">
          <Clock className="w-8 h-8 text-paper-400" />
         </div>
-        <p className="text-text-secondary font-medium">暂无护理提醒</p>
-        <p className="text-text-muted text-sm mt-1">记录驱虫或疫苗后会自动生成</p>
+        <p className="text-text-secondary font-medium">暂无待办，宝贝状态不错～</p>
+        <p className="text-text-muted text-sm mt-1">记录驱虫或洗澡后会自动出现</p>
        </div>
       ) : (
        <div className="grid grid-cols-2 gap-3">
@@ -402,7 +402,7 @@ export function AIInsights() {
      {/* 免责声明 */}
      <section className="text-center pb-4">
       <p className="text-xs text-text-muted">
-       *免责声明：AI 总结基于日常记录，不代表专业兽医诊断，宠物生病请及时就医。
+       *温馨提示：以上内容基于日常记录生成，仅供参考。如果宝贝不舒服，还是要去看医生哦。
       </p>
      </section>
 

@@ -4,7 +4,7 @@ import { Heart, Clock, Sparkles, PawPrint } from 'lucide-react';
 const navItems = [
  { path: '/', icon: Heart, label: '记录' },
  { path: '/timeline', icon: Clock, label: '大事记' },
- { path: '/ai', icon: Sparkles, label: 'AI看板' },
+ { path: '/ai', icon: Sparkles, label: 'AI管家' },
  { path: '/profile', icon: PawPrint, label: '我的' },
 ];
 

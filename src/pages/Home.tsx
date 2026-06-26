@@ -328,6 +328,7 @@ export function Home() {
            </p>
            <p className="text-xs text-text-muted">
             {(post.createdAt || post.timestamp) ? new Date(post.createdAt || post.timestamp || '').toLocaleString('zh-CN', {
+             year: 'numeric',
              month: 'short',
              day: 'numeric',
              hour: '2-digit',

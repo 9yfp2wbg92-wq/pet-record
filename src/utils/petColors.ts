@@ -1,4 +1,4 @@
-// 每个宠物分配一种主题色，用于时间轴、动态卡片、AI看板等所有界面
+// 每个宠物分配一种主题色，用于时间轴、动态卡片、AI管家等所有界面
 export const PET_COLORS = [
  { bg: 'bg-rose-50', text: 'text-rose-600', dot: 'bg-rose-400', border: 'border-rose-200', ring: 'ring-rose-200', btn: 'from-rose-500 to-pink-500', btnShadow: 'shadow-rose-200', fill: 'fill-rose-100', stroke: 'stroke-rose-500' },
  { bg: 'bg-sky-50', text: 'text-sky-600', dot: 'bg-sky-400', border: 'border-sky-200', ring: 'ring-sky-200', btn: 'from-sky-500 to-blue-500', btnShadow: 'shadow-sky-200', fill: 'fill-sky-100', stroke: 'stroke-sky-500' },

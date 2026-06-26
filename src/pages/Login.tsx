@@ -1,22 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Camera, User, ArrowRight, Sparkles } from 'lucide-react';
 import { usePetStore } from '../hooks/usePetStore';
 
 export function Login() {
  const navigate = useNavigate();
- const { registerUser, switchUser, users, _seedInitialData } = usePetStore();
+ const { registerUser, switchUser, users } = usePetStore();
  const [name, setName] = useState('');
  const [avatar, setAvatar] = useState('');
  const [showForm, setShowForm] = useState(false);
  const hasUsers = users.length > 0;
-
- // 如果没有用户数据，自动播种 Demo
- useEffect(() => {
-  if (users.length === 0) {
-   _seedInitialData();
-  }
- }, [users.length]);
 
  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+
 import { User, Pet, Post, Milestone, Meme, Comment, Like } from '../types';
 import { isSupabaseConfigured } from '../lib/supabase';
 import * as petService from '../lib/petService';
@@ -130,14 +130,12 @@ function getVisiblePosts(posts: Post[], petIds: string[]): Post[] {
     });
 }
 
-export const usePetStore = create<AppState>()(
-  persist(
-    (set, get) => ({
+export const usePetStore = create<AppState>()((set, get) => ({
       currentUser: null,
-      users: [],
-      pets: [],
-      posts: [],
-      milestones: [],
+      users: initialUsers,
+      pets: initialPets,
+      posts: initialPosts,
+      milestones: initialMilestones,
       memes: [],
       currentPetId: null,
       currentPet: null,
@@ -660,132 +658,6 @@ export const usePetStore = create<AppState>()(
           });
       },
     }),
-    {
-      name: 'pet_tracker_store',
-      // 自定义 storage：兼容旧版分散的 localStorage key，统一迁移到单个 key
-      storage: createJSONStorage(() => {
-        // 旧版 key 映射
-        const OLD_KEYS = {
-          USERS: 'pet_tracker_users',
-          PETS: 'pet_tracker_pets',
-          POSTS: 'pet_tracker_posts',
-          MILESTONES: 'pet_tracker_milestones',
-          MEMES: 'pet_tracker_memes',
-          CURRENT_USER_ID: 'pet_tracker_current_user_id',
-          CURRENT_PET_ID: 'pet_tracker_current_pet_id',
-        };
-        const NEW_KEY = 'pet_tracker_store';
-
-        return {
-          getItem: (name: string): string | null => {
-            // 先尝试新版单 key
-            const newData = localStorage.getItem(name);
-            if (newData) return newData;
-
-            // 新版不存在 → 尝试从旧版分散 key 迁移
-            try {
-              const users = safeParseArray(OLD_KEYS.USERS);
-              const pets = safeParseArray(OLD_KEYS.PETS);
-              const posts = safeParseArray(OLD_KEYS.POSTS);
-              const milestones = safeParseArray(OLD_KEYS.MILESTONES);
-              const memes = safeParseArray(OLD_KEYS.MEMES);
-              const currentUserId = localStorage.getItem(OLD_KEYS.CURRENT_USER_ID);
-              const currentPetId = localStorage.getItem(OLD_KEYS.CURRENT_PET_ID);
-
-              // 只有旧数据存在时才迁移
-              if (users.length > 0 || pets.length > 0) {
-                const currentUser = currentUserId
-                  ? users.find((u: User) => u.id === currentUserId) || null
-                  : null;
-
-                // 过滤出当前用户可见数据
-                const visiblePetIds = pets
-                  .filter((p: Pet) => currentUser && (p.ownerUserId === currentUser.id || p.sharedUserIds.includes(currentUser.id)))
-                  .map((p: Pet) => p.id);
-
-                const migratedState = {
-                  state: {
-                    currentUser,
-                    users,
-                    pets,
-                    posts: posts.filter((p: Post) => visiblePetIds.length === 0 || visiblePetIds.includes(p.petId)),
-                    milestones,
-                    memes: memes.filter((m: Meme) => visiblePetIds.length === 0 || visiblePetIds.includes(m.petId)),
-                    currentPetId: null, // 默认显示"全部"
-                  },
-                  version: 6,
-                };
-
-                // 写入新 key
-                const json = JSON.stringify(migratedState);
-                localStorage.setItem(name, json);
-
-                // 清理旧 key
-                Object.values(OLD_KEYS).forEach(key => localStorage.removeItem(key));
-
-                return json;
-              }
-            } catch {
-              // 迁移失败不影响正常流程
-            }
-
-            return null;
-          },
-          setItem: (name: string, value: string): void => {
-            localStorage.setItem(name, value);
-          },
-          removeItem: (name: string): void => {
-            localStorage.removeItem(name);
-          },
-        };
-      }),
-      // 不持久化计算属性和 action
-      partialize: (state) => ({
-        currentUser: state.currentUser,
-        users: state.users,
-        pets: state.pets,
-        posts: state.posts,
-        milestones: state.milestones,
-        memes: state.memes,
-        currentPetId: state.currentPetId,
-      }),
-      // hydration 完成后的回调：计算 currentPet + 种子数据
-      onRehydrateStorage: () => {
-        return (state) => {
-          if (!state) return;
-
-          // 1. 计算 currentPet
-          const currentPet = computeCurrentPet(state.pets, state.currentPetId);
-          state.currentPet = currentPet;
-
-          // 2. 过滤当前用户可见数据
-          if (state.currentUser) {
-            const visiblePets = getVisiblePets(state.pets, state.currentUser.id);
-            const visiblePetIds = visiblePets.map(p => p.id);
-            // null 表示"全部"，只在 currentPetId 对应的宠物不可见时才重置
-            const validCurrentPetId = (state.currentPetId === null || visiblePetIds.includes(state.currentPetId))
-              ? state.currentPetId
-              : (visiblePetIds[0] || null);
-
-            state.pets = state.pets; // 保留全部宠物（所有权数据）
-            state.posts = getVisiblePosts(state.posts, visiblePetIds);
-            state.memes = state.memes.filter(m => visiblePetIds.includes(m.petId));
-            state.milestones = state.milestones; // 保留全部里程碑
-            state.currentPetId = validCurrentPetId;
-            state.currentPet = validCurrentPetId
-              ? visiblePets.find(p => p.id === validCurrentPetId) || null
-              : null;
-          }
-
-          // 3. 空数据时播种 Demo
-          if (state.users.length === 0) {
-            state._seedInitialData();
-          }
-        };
-      },
-      version: 0,
-    }
-  )
 );
 
 // 辅助：安全解析 JSON 数组
