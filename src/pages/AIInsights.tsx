@@ -201,7 +201,7 @@ export function AIInsights() {
       <div>
        <h1 className="text-xl font-bold text-text-primary">AI 管家</h1>
        <p className="text-sm text-text-muted">
-        {selectedPet ? `${selectedPet.name}的健康陪伴` : '选择宝贝，开始陪伴'}
+        {selectedPet ? `${selectedPet.name}的健康管家` : '选择宝贝，开始陪伴'}
        </p>
       </div>
      </div>
