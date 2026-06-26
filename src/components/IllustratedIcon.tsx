@@ -8,7 +8,7 @@ export const eventIcons: Record<string, { Icon: LucideIcon; color: string; bg: s
   weight:   { Icon: Scale,          color: 'text-amber-600',  bg: 'bg-amber-50' },
   medical:  { Icon: Stethoscope,    color: 'text-red-600',    bg: 'bg-red-50' },
   abnormal: { Icon: AlertTriangle,  color: 'text-orange-600', bg: 'bg-orange-50' },
-  home:     { Icon: Home,           color: 'text-emerald-600', bg: 'bg-emerald-50' },
+  home:     { Icon: Home,           color: 'text-amber-600',  bg: 'bg-amber-50' },
   anniversary: { Icon: Cake,        color: 'text-pink-600',   bg: 'bg-pink-50' },
   other:    { Icon: FileText,       color: 'text-paper-700',  bg: 'bg-paper-200' },
   neuter:   { Icon: Scissors,       color: 'text-purple-600', bg: 'bg-purple-50' },

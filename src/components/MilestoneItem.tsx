@@ -19,7 +19,7 @@ const iconMap: Record<string, any> = {
 const colorMap: Record<string, string> = {
  home: 'bg-primary text-white',
  vaccine: 'bg-blue-500 text-white',
- deworm: 'bg-green-500 text-white',
+ deworm: 'bg-teal-500 text-white',
  bath: 'bg-cyan-500 text-white',
  neuter: 'bg-purple-500 text-white',
  anniversary: 'bg-yellow-500 text-white',

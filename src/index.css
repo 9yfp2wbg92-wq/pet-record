@@ -80,7 +80,7 @@ body {
   100% { background-position: 0% 50%; }
 }
 .ai-loading-bar {
-  background: linear-gradient(90deg, #7BA587, #A8C9AE, #E8B44F, #A8C9AE, #7BA587);
+  background: linear-gradient(90deg, #B8AA92, #D4C9B5, #E8B44F, #D4C9B5, #B8AA92);
   background-size: 300% 100%;
   animation: gradientFlow 1.5s ease-in-out infinite;
 }

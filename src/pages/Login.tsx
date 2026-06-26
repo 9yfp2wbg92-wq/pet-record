@@ -109,7 +109,7 @@ export function Login() {
           />
          ) : (
           <div className="w-24 h-24 rounded-3xl bg-paper-200 flex items-center justify-center">
-           <Camera className="w-10 h-10 text-forest-400" />
+           <Camera className="w-10 h-10 text-paper-400" />
           </div>
          )}
          <label className="absolute -bottom-2 -right-2 w-9 h-9 bg-paper-800 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-paper-700 transition-colors shadow-card">
